@@ -43,7 +43,7 @@ func main() {
 		OrdererOrgName:   "OrdererOrg",
 		OrdererEndpoint:  "orderer.example.com",
 		ChaincodeID:      cc_name,
-		ChaincodePath:    os.Getenv("GOPATH")+"/src/github.com/shuizhongmose/go-fabric/fabric-first-go-app/chaincode/",
+		ChaincodePath:    os.Getenv("GOPATH")+"/src/fabric-first-go-app/IFC/",
 		ChaincodeVersion: cc_version,
 	}
 

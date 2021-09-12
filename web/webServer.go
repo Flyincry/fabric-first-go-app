@@ -7,9 +7,11 @@ package web
 
 import (
 	"fmt"
-	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/web/controllers"
 	"net/http"
+
+	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/web/controllers"
 )
+
 
 func WebStart(app *controllers.Application) {
 
@@ -19,12 +21,13 @@ func WebStart(app *controllers.Application) {
 	http.HandleFunc("/", app.IndexView)
 	http.HandleFunc("/index.html", app.IndexView)
 	http.HandleFunc("/setInfo.html", app.SetInfoView)
-	http.HandleFunc("/setReq", app.SetInfo)
+	http.HandleFunc("/setReq", app.Apply)
 	http.HandleFunc("/queryReq", app.QueryInfo)
+	http.HandleFunc("/query", app.QueryInfo)
 
-	fmt.Println("启动Web服务, 监听端口号: 9000")
+	fmt.Println("启动Web服务, 监听端口号: 9001")
 
-	err := http.ListenAndServe(":9000", nil)
+	err := http.ListenAndServe(":9001", nil)
 	if err != nil {
 		fmt.Println("启动Web服务错误")
 	}

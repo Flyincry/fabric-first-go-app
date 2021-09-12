@@ -1,5 +1,5 @@
 {{/*
-    author: hanxiaodong
+    author: CBIT
 */}}
 <html>
 <head>
@@ -10,27 +10,37 @@
 
 <div class="common menu">
     <ul>
-        <li><a href="/index.html"><img src="/static/img/chaindesk.png" width="120px" height="50px"/></a></li>
-        <li><a href="/queryReq?name=Hanxiaodong">查询信息</a></li>
+        <li><a href="/index.html"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
+        <li><a href="/query">查询信息</a></li>
+        <li><a href="/queryReq">查询结果</a></li>
         <li><a href="/setInfo.html">设置/修改</a></li>
+        <li><a href="/other.html">其他功能</a></li>
     </ul>
 </div>
 
 <div class="common main">
+    <div class="formInfo" style="width: 50%">
+        <form action="/queryReq" method="post">
+            Jeweler: <input type="text" name="jeweler" value="" /><br/><br/>
+            Paper Number: <input type="text" name="paperNumber" value="" /><br/><br/>
+            <input type="submit" value="提交"/>
+        </form>
+    </div>
     <div class="content">
         <h2>查询结果</h2>
         <div class="msg">
-            Hanxiaodong:&nbsp;&nbsp;&nbsp;&nbsp;{{.Msg}}
+            &nbsp;&nbsp;&nbsp;&nbsp;{{.Msg}}
         </div>
         <div class="calink">
             <a href="/index.html">返回首页</a><br/>
-            <a href="/setInfo.html">设置/修改</a>
+            <a href="/setInfo.html">设置/修改</a><br/>
+            <a href="/other.html">等待修改</a>
         </div>
     </div>
 </div>
 
 <div class="common footer">
-    孔壹学院出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
+    区块链智能科技中心出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
 </div>
 </body>
 </html>

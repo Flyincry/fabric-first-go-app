@@ -1,3 +1,6 @@
 chaincode/vendor/
 fabric-first-go-app
 .idea/
+vendor/
+IFC/vendor
+chaincode/vendor

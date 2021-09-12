@@ -1,5 +1,5 @@
 {{/*
-    author: hanxiaodong
+    author: CBIT
 */}}
 <html>
 <head>
@@ -10,9 +10,11 @@
 
 <div class="common menu">
     <ul>
-        <li><a href="/index.html"><img src="/static/img/chaindesk.png" width="120px" height="50px"/></a></li>
-        <li><a href="/queryReq?name=Hanxiaodong">查询信息</a></li>
+        <li><a href="/index.html"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
+        <li><a href="/query">查询信息</a></li>
+        <li><a href="/queryReq">查询结果</a></li>
         <li><a href="/setInfo.html">设置/修改</a></li>
+        <li><a href="/other.html">其他功能</a></li>
     </ul>
 </div>
 
@@ -27,22 +29,23 @@
             </div>
             <div class="formInfo">
                 <form action="/setReq" method="post">
-                    Key: <input disabled="true" type="text" name="key" value="Hanxiaodong" /><br/><br/>
-                    Val: <input type="text" name="num" value="" placeholder="请输入一个值"/><br/><br/>
-                    <input type="hidden" name="name" value="Hanxiaodong"/>
+                    Jeweler: <input type="text" name="jeweler" value="" /><br/><br/>
+                    Paper Number: <input type="text" name="paperNumber" value="" /><br/><br/>
+                    Financial Amount: <input type="text" name="financialAmount" value="" /><br/><br/>
                     <input type="submit" value="提交"/>
                 </form>
             </div>
         </div>
         <div class="calink">
             <a href="/index.html">返回首页</a><br/>
-            <a href="/queryReq?name=Hanxiaodong">查询信息</a>
+            <a href="/queryReq">查询信息</a><br/>
+            <a href="/other.html">等待修改</a>
         </div>
     </div>
 </div>
 
 <div class="common footer">
-    孔壹学院出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
+    区块链智能科技中心出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
 </div>
 
 </body>

@@ -27,20 +27,20 @@ client:
 
   # Root of the MSP directories with keys and certs.
   cryptoconfig:
-    path: /home/verayy/codes/go/src/github.com/hyperledger/fabric-samples/test-network/organizations
+    path: /root/go/src/github.com/hyperledger/fabric-samples/test-network/organizations
 
   # Some SDKs support pluggable KV stores, the properties under "credentialStore"
   # are implementation specific
   credentialStore:
     # [Optional]. Used by user store. Not needed if all credentials are embedded in configuration
     # and enrollments are performed elswhere.
-    path: "/home/verayy/data/fabric-first-go-app/state-store"
+    path: "/root/go/src/fabric-first-go-app/state-store"
 
     # [Optional]. Specific to the CryptoSuite implementation used by GO SDK. Software-based implementations
     # requiring a key store. PKCS#11 based implementations does not.
     cryptoStore:
       # Specific to the underlying KeyValueStore that backs the crypto key store.
-      path: /home/verayy/data/fabric-first-go-app/msp
+      path: /root/go/src/fabric-first-go-app/msp
 
   # [Optional] BCCSP config for the client. Used by GO SDK.
   BCCSP:
@@ -59,9 +59,9 @@ client:
     # [Optional]. Client key and cert for TLS handshake with peers and orderers
     client:
       key:
-        path: /home/verayy/codes/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key
+        path: /root/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.key
       cert:
-        path: /home/verayy/codes/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt
+        path: /root/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/users/User1@org1.example.com/tls/client.crt
 
 channels:
   # multi-org test channel
@@ -142,7 +142,7 @@ peers:
       allow-insecure: false
 
     tlsCACerts:
-      path: /home/verayy/codes/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+      path: /root/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
 
   peer0.org2.example.com:
 #    url: peer0.org2.example.com:8051
@@ -157,7 +157,7 @@ peers:
       allow-insecure: false
 
     tlsCACerts:
-      path: /home/verayy/codes/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+      path: /root/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
 
 #
 # List of orderers to send transaction and channel create/update requests to. For the time
@@ -180,7 +180,7 @@ orderers:
       allow-insecure: false
 
     tlsCACerts:
-      path: /home/verayy/codes/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+      path: /root/go/src/github.com/hyperledger/fabric-samples/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
 
 
 # EntityMatchers enable substitution of network hostnames with static configurations
