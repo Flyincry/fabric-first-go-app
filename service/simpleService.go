@@ -1,23 +1,44 @@
 package service
 
 import (
-	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"fmt"
 	"time"
+
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/sdkenv"
 )
 
 type ServiceHandler struct {
-	ChaincodeID	string
-	Client	*channel.Client
+	ChaincodeID string
+	Client      *channel.Client
 }
 
+type InventoryFinancingPaper struct {
+	PaperNumber        string `json:"paperNumber"`
+	Jeweler            string `json:"jeweler"`
+	ApplyDateTime      string `json:"applyDateTime"`
+	ReviseDateTime     string `json:"reviseDateTime"`
+	AcceptDateTime     string `json:"acceptDateTime"`
+	ReadyDateTime      string `json:"readyDateTime"`
+	EvalDateTime       string `json:"evalDateTime"`
+	ReceiveDateTime    string `json:"receiveDateTime"`
+	EndDate            string `json:"endDateTime"`
+	PaidbackDateTime   string `json:"paidBackDateTime"`
+	RepurchaseDateTime string `json:"RepurchaseDateTime"`
+	FinancingAmount    int    `json:"financingAmount"`
+	Dealer             string `json:"dealer"`
+	State              int    `json:"currentState"`
+	Bank               string `json:"bank"`
+	Evaluator          string `json:"evaluator"`
+	Repurchaser        string `json:"repurchaser"`
+	Supervisor         string `json:"supervisor"`
+}
 
 func InitService(chaincodeID, channelID string, org *sdkenv.OrgInfo, sdk *fabsdk.FabricSDK) (*ServiceHandler, error) {
 	handler := &ServiceHandler{
-		ChaincodeID:chaincodeID,
+		ChaincodeID: chaincodeID,
 	}
 	//prepare channel client context using client context
 	clientChannelContext := sdk.ChannelContext(channelID, fabsdk.WithUser(org.OrgUser), fabsdk.WithOrg(org.OrgName))

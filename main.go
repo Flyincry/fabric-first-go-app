@@ -2,17 +2,19 @@ package main
 
 import (
 	"fmt"
-	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/sdkenv"
 	"os"
+
+	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/sdkenv"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/service"
-	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/web/controllers"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/web"
+	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/web/controllers"
 )
 
 const (
-	cc_name = "simplecc"
+	cc_name    = "simplecc"
 	cc_version = "1.0.0"
 )
+
 func main() {
 	// init orgs information
 	orgs := []*sdkenv.OrgInfo{
@@ -43,7 +45,7 @@ func main() {
 		OrdererOrgName:   "OrdererOrg",
 		OrdererEndpoint:  "orderer.example.com",
 		ChaincodeID:      cc_name,
-		ChaincodePath:    os.Getenv("GOPATH")+"/src/fabric-first-go-app/IFC/",
+		ChaincodePath:    os.Getenv("GOPATH") + "/src/fabric-first-go-app/IFC/",
 		ChaincodeVersion: cc_version,
 	}
 
@@ -69,17 +71,17 @@ func main() {
 	// invoke chaincode set status
 	fmt.Println(">> 通过链码外部服务设置链码状态......")
 	serviceHandler, err := service.InitService(info.ChaincodeID, info.ChannelID, info.Orgs[0], sdk)
-	if err!=nil{
+	if err != nil {
 		fmt.Println()
 		os.Exit(-1)
 	}
 
-	msg, err := serviceHandler.SetInfo("name", "verayy")
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(msg)
-	}
+	// msg, err := serviceHandler.SetInfo("name", "verayy")
+	// if err != nil {
+	// 	fmt.Println(err)
+	// } else {
+	// 	fmt.Println(msg)
+	// }
 	fmt.Println(">> 设置链码状态完成")
 
 	// start web service

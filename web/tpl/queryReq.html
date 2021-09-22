@@ -14,7 +14,7 @@
         <li><a href="/query">查询信息</a></li>
         <li><a href="/queryReq">查询结果</a></li>
         <li><a href="/setInfo.html">设置/修改</a></li>
-        <li><a href="/other.html">其他功能</a></li>
+        <li><a href="/modifyPage?Action=Apply">新建合约</a></li>
     </ul>
 </div>
 
@@ -28,14 +28,83 @@
     </div>
     <div class="content">
         <h2>查询结果</h2>
-        <div class="msg">
-            &nbsp;&nbsp;&nbsp;&nbsp;{{.Msg}}
+        <div class="top">
+                  <p>
+                      <span>合约编号：</span>
+                      <span>{{.Paper.PaperNumber}}</span>
+                  </p>
+                  <p>
+                      <span>珠宝商：</span>
+                      <span>{{.Paper.Jeweler}}</span>
+                  </p>
+                  <p>
+                      <span>融资金额：</span>
+                      <span>{{.Paper.FinancingAmount}}</span>
+                  </p>
+                  <p>
+                      <span>创建时间：</span>
+                      <span>{{.Paper.ApplyDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>银行：</span>
+                      <span>{{.Paper.Bank}}</span>
+                  </p>
+                  <p>
+                      <span>评估方：</span>
+                      <span>{{.Paper.Evaluator}}</span>
+                  </p>
+                  <p>
+                      <span>回购方：</span>
+                      <span>{{.Paper.Repurchaser}}</span>
+                  </p>
+                  <p>
+                      <span>监管方：</span>
+                      <span>{{.Paper.Supervisor}}</span>
+                  </p>
+                  <p>
+                      <span>修订时间：</span>
+                      <span>{{.Paper.ReviseDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>接受时间：</span>
+                      <span>{{.Paper.AcceptDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>回购就绪时间：</span>
+                      <span>{{.Paper.ReadyDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>评估时间：</span>
+                      <span>{{.Paper.EvalDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>接收时间：</span>
+                      <span>{{.Paper.ReceiveDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>监管结束时间：</span>
+                      <span>{{.Paper.EndDate}}</span>
+                  </p>
+                  <p>
+                      <span>赎回时间：</span>
+                      <span>{{.Paper.PaidbackDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>回购时间：</span>
+                      <span>{{.Paper.RepurchaseDateTime}}</span>
+                  </p>
         </div>
-        <div class="calink">
-            <a href="/index.html">返回首页</a><br/>
-            <a href="/setInfo.html">设置/修改</a><br/>
-            <a href="/other.html">等待修改</a>
-        </div>
+    </div>
+    <div class="calink">
+	    <!-- 判断paper状态和用户身份，来展示可操作的动作 -->
+	    {{if eq .Paper.State 1}}
+	    <a href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">接受</a>
+	    <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+	    {{else if eq .Paper.State 2}}
+	    <a href="/modifyPage?Action=Evaluate&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">评估</a>
+	    <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+	    {{end}}
+	    <a href="/index.html">返回首页</a><br/>
     </div>
 </div>
 

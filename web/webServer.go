@@ -12,7 +12,6 @@ import (
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/web/controllers"
 )
 
-
 func WebStart(app *controllers.Application) {
 
 	fs := http.FileServer(http.Dir("web/static"))
@@ -21,9 +20,11 @@ func WebStart(app *controllers.Application) {
 	http.HandleFunc("/", app.IndexView)
 	http.HandleFunc("/index.html", app.IndexView)
 	http.HandleFunc("/setInfo.html", app.SetInfoView)
-	http.HandleFunc("/setReq", app.Apply)
 	http.HandleFunc("/queryReq", app.QueryInfo)
 	http.HandleFunc("/query", app.QueryInfo)
+	http.HandleFunc("/modifyPage", app.ModifyShow)
+	http.HandleFunc("/modify", app.Modify)
+	http.HandleFunc("/Apply", app.Apply)
 
 	fmt.Println("启动Web服务, 监听端口号: 9001")
 
