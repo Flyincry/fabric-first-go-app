@@ -5,24 +5,88 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	usrinfo "mydata"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/gorilla/sessions"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/service"
 )
+
+var store = sessions.NewCookieStore([]byte("mysession"))
 
 type Application struct {
 	Fabric *service.ServiceHandler
 }
 
-func (app *Application) IndexView(w http.ResponseWriter, r *http.Request) {
-	showView(w, r, "index.html", nil)
+func (app *Application) Account(w http.ResponseWriter, r *http.Request) {
+	showView(w, r, "login.html", nil)
 }
 
-func (app *Application) SetInfoView(w http.ResponseWriter, r *http.Request) {
-	showView(w, r, "setInfo.html", nil)
+func (app *Application) Login(response http.ResponseWriter, request *http.Request) {
+	request.ParseForm()
+	username := request.Form.Get("username")
+	password := request.Form.Get("password")
+
+	if _, ok := usrinfo.Fruits[username]; ok {
+		//存在
+		if password == usrinfo.Fruits[username] {
+			session, _ := store.Get(request, "mysession")
+			session.Values["username"] = username
+			session.Save(request, response)
+			http.Redirect(response, request, "/home/welcome", http.StatusSeeOther)
+		} else {
+			data := map[string]interface{}{
+				"err": "请输入与用户名相匹配的密码",
+			}
+			showView(response, request, "login.html", data)
+		}
+	} else {
+		data := map[string]interface{}{
+			"err": "用户名不存在，请输入合法用户名",
+		}
+		showView(response, request, "login.html", data)
+	}
 }
+
+func (app *Application) Welcome(response http.ResponseWriter, request *http.Request) {
+	session, _ := store.Get(request, "mysession")
+	username := session.Values["username"]
+	medium := username.(string)
+	role := usrinfo.Roles[medium]
+	fmt.Println("username: ", username)
+	fmt.Println("role: ", role)
+	data := map[string]interface{}{
+		"username": username,
+		"role":     role,
+	}
+	showView(response, request, "welcome.html", data)
+}
+
+func (app *Application) Logout(response http.ResponseWriter, request *http.Request) {
+	session, _ := store.Get(request, "mysession")
+	session.Options.MaxAge = -1
+	session.Save(request, response)
+	http.Redirect(response, request, "/home/index", http.StatusSeeOther)
+}
+
+func (app *Application) IndexView(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"]
+	medium := username.(string)
+	role := usrinfo.Roles[medium]
+	data := map[string]interface{}{
+		"username": username,
+		"role":     role,
+	}
+	showView(w, r, "index.html", data)
+}
+
+// func (app *Application) SetInfoView(w http.ResponseWriter, r *http.Request) {
+// 	showView(w, r, "setInfo.html", nil)
+// }
 
 // 根据指定的 key 设置/修改 value 信息
 func (app *Application) ModifyShow(w http.ResponseWriter, r *http.Request) {
@@ -32,19 +96,28 @@ func (app *Application) ModifyShow(w http.ResponseWriter, r *http.Request) {
 	action := r.FormValue("Action")
 	result, err := app.Fabric.Querypaper(jeweler, paperNumber)
 
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"]
+	medium := username.(string)
+	role := usrinfo.Roles[medium]
+
 	var paper = service.InventoryFinancingPaper{}
 	json.Unmarshal(result, &paper)
 
 	data := &struct {
-		Paper  service.InventoryFinancingPaper
-		Msg    string
-		Flag   bool
-		Action string
+		Paper    service.InventoryFinancingPaper
+		Msg      string
+		Flag     bool
+		Action   string
+		Username string
+		Role     string
 	}{
-		Paper:  paper,
-		Msg:    "",
-		Flag:   false,
-		Action: action,
+		Paper:    paper,
+		Msg:      "",
+		Flag:     false,
+		Action:   action,
+		Username: medium,
+		Role:     role,
 	}
 
 	if err != nil {
@@ -70,7 +143,7 @@ func (app *Application) Modify(w http.ResponseWriter, r *http.Request) {
 		ReceiveDateTime:    r.FormValue("receiveDateTime"),
 		EndDate:            r.FormValue("endDateTime"),
 		PaidbackDateTime:   r.FormValue("paidBackDateTime"),
-		RepurchaseDateTime: r.FormValue("RepurchaseDateTime"),
+		RepurchaseDateTime: r.FormValue("repurchaseDateTime"),
 		Bank:               r.FormValue("bank"),
 		Evaluator:          r.FormValue("evaluator"),
 		Repurchaser:        r.FormValue("repurchaser"),
@@ -80,23 +153,6 @@ func (app *Application) Modify(w http.ResponseWriter, r *http.Request) {
 
 	// 调用业务层, 反序列化
 	app.Fabric.Action(paper, action)
-	// result, err := app.Fabric.Action2(action, Jeweler, PaperNumber, FinancingAmount, ApplyDateTime, ReviseDateTime, AcceptDateTime, ReadyDateTime, EvalDateTime, ReceiveDateTime, EndDate, PaidbackDateTime, RepurchaseDateTime, Bank, Evaluator, Repurchaser, Supervisor)
-
-	// // 封装响应数据
-	// data := &struct {
-	// 	Flag bool
-	// 	Msg  string
-	// 	Err  error
-	// }{
-	// 	Flag: true,
-	// 	Msg:  result,
-	// 	Err:  err,
-	// }
-	// if err != nil {
-	// 	data.Msg = err.Error()
-	// } else {
-	// 	data.Msg = "操作成功，交易ID: " + transactionID
-	// }
 
 	// 响应客户端
 	r.Form.Set("jeweler", paper.Jeweler)
@@ -110,23 +166,32 @@ func (app *Application) QueryInfo(w http.ResponseWriter, r *http.Request) {
 	jeweler := r.FormValue("jeweler")
 	paperNumber := r.FormValue("paperNumber")
 
+	// 获取用户信息
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"]
+	medium := username.(string)
+	role := usrinfo.Roles[medium]
+	// fmt.Println("username: ", username)
+	// fmt.Println("role: ", role)
+
 	// 调用业务层, 反序列化
 	msg, err := app.Fabric.Querypaper(jeweler, paperNumber)
 	var paper = service.InventoryFinancingPaper{}
 	json.Unmarshal(msg, &paper)
 
-	// fmt.Println("查询信息成功：")
-	// fmt.Println(paper)
-
 	// 封装响应数据
 	data := &struct {
-		Paper service.InventoryFinancingPaper
-		Msg   string
-		Flag  bool
+		Paper    service.InventoryFinancingPaper
+		Msg      string
+		Flag     bool
+		Username string
+		Role     string
 	}{
-		Paper: paper,
-		Msg:   "",
-		Flag:  false,
+		Paper:    paper,
+		Msg:      "",
+		Flag:     false,
+		Username: medium,
+		Role:     role,
 	}
 	if err != nil {
 		data.Msg = err.Error()
