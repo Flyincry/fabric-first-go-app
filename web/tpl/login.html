@@ -3,16 +3,24 @@
         <title>Login</title>
     </head>
     <body>
-
-        <h3>Login</h3>
-        {{err}}
-        <form method="post" action="/account/login">
-            Username <input type="text" name="username"/>
+        <div class="msg" style="text-align: center; font-size: 20px;">
+            <h3>欢迎来到Hyperledger Fabric的世界，请先验证身份</h3>
+            {{.err}}
+            <div class="common menu">
+                <ul>
+                <li><a href="https://www.cuhk.edu.cn/"><img src="https://www.cuhk.edu.cn/sites/webmaster.prod1.dpsite04.cuhk.edu.cn/files/zh-hans_logo.png" width="600px" height="100px"/></a></li>
+                </ul>
+            </div>
+            <form method="post" action="/home/login">
+            
+            用户名 <input type="text" name="username"/>
             <br>
-            Password <input type="password" name="password">
-            <br>
-            <input type="submit" value="Login">
 
+            密码 <input type="password" name="password">
+            <br>
+            
+            <input type="submit" value="登入">
+        </div>
 
 
         </form>

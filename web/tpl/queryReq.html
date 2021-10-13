@@ -3,24 +3,28 @@
 */}}
 <html>
 <head>
-    <title></title>
+    <title>查询合约</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
+<div>
+        <h3>Welcome {{.Username}}, indentity: {{.Role}} </h3>
+        <a href="/home/logout">Logout</a>
+</div>
 
 <div class="common menu">
     <ul>
-        <li><a href="/index.html"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
+        <li><a href="/home/welcome"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
         <li><a href="/query">查询信息</a></li>
-        <li><a href="/queryReq">查询结果</a></li>
-        <li><a href="/setInfo.html">设置/修改</a></li>
+{{if eq .Role "Jeweler"}}
         <li><a href="/modifyPage?Action=Apply">新建合约</a></li>
+{{end}}
     </ul>
 </div>
 
 <div class="common main">
     <div class="formInfo" style="width: 50%">
-        <form action="/queryReq" method="post">
+        <form action="/query" method="post">
             Jeweler: <input type="text" name="jeweler" value="" /><br/><br/>
             Paper Number: <input type="text" name="paperNumber" value="" /><br/><br/>
             <input type="submit" value="提交"/>
@@ -97,14 +101,19 @@
     </div>
     <div class="calink">
 	    <!-- 判断paper状态和用户身份，来展示可操作的动作 -->
+      	    <h2>可进行的操作</h2>
 	    {{if eq .Paper.State 1}}
-	    <a href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">接受</a>
-	    <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+        	       {{if eq .Role "Bank"}}
+	        <a href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">接受</a>
+	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+          	       {{end}}
 	    {{else if eq .Paper.State 2}}
-	    <a href="/modifyPage?Action=Evaluate&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">评估</a>
-	    <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+       	      {{if eq .Role "Evaluator"}}
+	        <a href="/modifyPage?Action=Evaluate&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">评估</a>
+	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+        	       {{end}}
 	    {{end}}
-	    <a href="/index.html">返回首页</a><br/>
+	    <a href="/home/welcome">返回首页</a><br/>
     </div>
 </div>
 
