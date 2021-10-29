@@ -1,0 +1,50 @@
+{{/*
+    author: CBIT
+*/}}
+<html>
+<head>
+    <title>查询通道</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div>
+        <h3>Welcome {{.Username}}, indentity: {{.Role}} </h3>
+        <a href="/home/logout">Logout</a>
+</div>
+
+<div class="common menu">
+    <ul>
+        <li><a href="/home/welcome"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
+        <li><a href="/query">查询信息</a></li>
+        <li><a href="/CreateChannelShow">创建通道</a></li>
+        <li><a href="/QueryChannel">查询通道</a></li>
+{{if eq .Role "Jeweler"}}
+        <li><a href="/modifyPage?Action=Apply">新建合约</a></li>
+{{end}}
+    </ul>
+</div>
+
+<div class="common main">
+    <div class="formInfo" style="width: 50%">
+        <form action="/QueryChannel" method="post">
+            OrgName: <input type="text" name="OrgName" value="" /><br/><br/>
+            Port: <input type="text" name="Port" value="" /><br/><br/>
+            <input type="submit" value="提交"/>
+        </form>
+    </div>
+    <div class="content">
+        <h2>查询结果</h2>
+        <div class="top">
+                  <p>
+                      <span>{{.Msg}}</span>
+                      <span>{{.Err}}</span>
+                  </p>
+        </div>
+    </div>
+</div>
+
+<div class="common footer">
+    区块链智能科技中心出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
+</div>
+</body>
+</html>

@@ -32,6 +32,10 @@ func WebStart(app *controllers.Application) {
 	http.HandleFunc("/home/logout", app.Logout)
 	// http.HandleFunc("/home/logout", accountcontroller.Logout)
 
+	http.HandleFunc("/QueryChannel", app.QueryChannel)
+	http.HandleFunc("/CreateChannelShow", app.CreateChannelShow)
+	http.HandleFunc("/CreateChannel", app.CreateChannel)
+
 	fmt.Println("启动Web服务, 监听端口号: 9000")
 
 	err := http.ListenAndServe(":9000", nil)

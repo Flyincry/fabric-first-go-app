@@ -24,7 +24,7 @@ func main() {
 			OrgMspId:      "Org1MSP",
 			OrgUser:       "User1",
 			OrgPeerNum:    1,
-			OrgAnchorFile: os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-samples/test-network/channel-artifacts/Org1MSPanchors.tx",
+			OrgAnchorFile: os.Getenv("GOPATH") + "/src/fabric-samples/test-network/channel-artifacts/Org1MSPanchors.tx",
 		},
 		{
 			OrgAdminUser:  "Admin",
@@ -32,14 +32,14 @@ func main() {
 			OrgMspId:      "Org2MSP",
 			OrgUser:       "User1",
 			OrgPeerNum:    1,
-			OrgAnchorFile: os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-samples/test-network/channel-artifacts/Org2MSPanchors.tx",
+			OrgAnchorFile: os.Getenv("GOPATH") + "/src/fabric-samples/test-network/channel-artifacts/Org2MSPanchors.tx",
 		},
 	}
 
 	// init sdk env info
 	info := sdkenv.SdkEnvInfo{
 		ChannelID:        "testchannel",
-		ChannelConfig:    os.Getenv("GOPATH") + "/src/github.com/hyperledger/fabric-samples/test-network/channel-artifacts/testchannel.tx",
+		ChannelConfig:    os.Getenv("GOPATH") + "/src/fabric-samples/test-network/channel-artifacts/testchannel.tx",
 		Orgs:             orgs,
 		OrdererAdminUser: "Admin",
 		OrdererOrgName:   "OrdererOrg",

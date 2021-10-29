@@ -1,6 +1,10 @@
 package service
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"os/exec"
 	"strconv"
 
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
@@ -89,6 +93,37 @@ func (t *ServiceHandler) Action(paper InventoryFinancingPaper, Action string) (s
 	}
 
 	return string(response.TransactionID), nil
+}
+
+func (t *ServiceHandler) CreateChan(ChannelName string) {
+	cmd := exec.Command("./network.sh", "createChannel", "-c", ChannelName)
+	cmd.Dir = "/root/workspace/src/fabric-samples/test-network"
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("combined out:\n%s\n", string(out))
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+	fmt.Printf("combined out:\n%s\n", string(out))
+}
+
+func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string) {
+	os.Setenv("FABRIC_CFG_PATH", "/root/workspace/src/fabric-samples/config")
+	os.Setenv("CORE_PEER_TLS_ENABLED", "true")
+	os.Setenv("CORE_PEER_LOCALMSPID", "Org"+OrgName+"MSP")
+	os.Setenv("CORE_PEER_TLS_ROOTCERT_FILE", "/root/workspace/src/fabric-samples/test-network/organizations/peerOrganizations/org"+OrgName+".example.com/peers/peer0.org"+OrgName+".example.com/tls/ca.crt")
+	os.Setenv("CORE_PEER_MSPCONFIGPATH", "/root/workspace/src/fabric-samples/test-network/organizations/peerOrganizations/org"+OrgName+".example.com/users/Admin@org"+OrgName+".example.com/msp")
+	os.Setenv("CORE_PEER_ADDRESS", "localhost:"+Port)
+
+	cmd := exec.Command("peer", "channel", "list")
+	cmd.Dir = "/root/workspace/src/fabric-samples/test-network"
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("combined out:\n%s\n", string(out))
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+	fmt.Printf("combined out:\n%s\n", string(out))
+	return string(out)
 }
 
 // func (t *ServiceHandler) Action2(action, Jeweler, PaperNumber, FinancingAmount, ApplyDateTime, ReviseDateTime, AcceptDateTime, ReadyDateTime, EvalDateTime, ReceiveDateTime, EndDate, PaidbackDateTime, RepurchaseDateTime, Bank, Evaluator, Repurchaser, Supervisor string) (string, error) {

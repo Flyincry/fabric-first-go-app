@@ -201,6 +201,72 @@ func (app *Application) QueryInfo(w http.ResponseWriter, r *http.Request) {
 	showView(w, r, "queryReq.html", data)
 }
 
+// Channel
+func (app *Application) CreateChannelShow(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"]
+	medium := username.(string)
+	role := usrinfo.Roles[medium]
+
+	data := &struct {
+		Username string
+		Role     string
+	}{
+		Username: medium,
+		Role:     role,
+	}
+
+	showView(w, r, "CreateChannelShow.html", data)
+}
+
+func (app *Application) CreateChannel(w http.ResponseWriter, r *http.Request) {
+	// 获取提交数据
+	ChannelName := r.FormValue("ChannelName")
+
+	// 调用业务层, 反序列化
+	app.Fabric.CreateChan(ChannelName)
+
+	// 响应客户端
+	r.Form.Set("OrgName", "1")
+	r.Form.Set("Port", "7051")
+	app.QueryChannel(w, r)
+}
+
+// 根据指定的 Key 查询信息
+func (app *Application) QueryChannel(w http.ResponseWriter, r *http.Request) {
+	// 获取提交数据
+	OrgName := r.FormValue("OrgName")
+	Port := r.FormValue("Port")
+
+	// 获取用户信息
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"]
+	medium := username.(string)
+	role := usrinfo.Roles[medium]
+
+	msg, err := "", ""
+	// 调用业务层, 反序列化
+	if OrgName != "" {
+		msg = app.Fabric.QueryChan(OrgName, Port)
+	}
+
+	// 封装响应数据
+	data := &struct {
+		Msg      string
+		Err      string
+		Username string
+		Role     string
+	}{
+		Msg:      msg,
+		Err:      err,
+		Username: medium,
+		Role:     role,
+	}
+
+	// 响应客户端
+	showView(w, r, "QueryChannel.html", data)
+}
+
 func (app *Application) Apply(w http.ResponseWriter, r *http.Request) {
 	// 获取提交数据
 	jeweler := r.FormValue("jeweler")
