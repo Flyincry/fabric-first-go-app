@@ -30,6 +30,7 @@ run:
 	@cd ${GOPATH}/src/fabric-samples/test-network && configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID testchannel -asOrg Org1MSP -configPath ./configtx/
 	@cd ${GOPATH}/src/fabric-samples/test-network && configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID testchannel -asOrg Org2MSP -configPath ./configtx/
 	@chmod +x ./fabric-first-go-app
+	@chmod +x ../fabric-samples/test-network/addOrg3/runme.sh
 	@./fabric-first-go-app
 
 ##### CLEAN
@@ -38,3 +39,9 @@ clean: env-down
 	@rm -rf /home/verayy/data/fabric-first-go-app/*
 	@cd ${GOPATH}/src/fabric-samples/test-network && ./network.sh down
 	@echo "Clean up done ..."
+
+### dbinit 
+
+### webup
+
+### airflow

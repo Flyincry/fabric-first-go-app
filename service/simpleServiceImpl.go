@@ -100,10 +100,20 @@ func (t *ServiceHandler) CreateChan(ChannelName string) {
 	cmd.Dir = "/root/workspace/src/fabric-samples/test-network"
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("combined out:\n%s\n", string(out))
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
+}
+
+func (t *ServiceHandler) CreateOrg(OrgID string) (error){
+	cmd := exec.Command("./runme.sh", OrgID)
+	cmd.Dir = "/root/workspace/src/fabric-samples/test-network/addOrg3"
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+	fmt.Printf("combined out:\n%s\n", string(out))
+	return err
 }
 
 func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string) {

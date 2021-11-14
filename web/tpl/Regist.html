@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>Regist</title>
+    </head>
+    <body>
+        <div class="msg" style="text-align: center; font-size: 20px;">
+            {{.err}}
+            <form method="post" action="/Regist">
+            
+            用户名 <input type="text" name="username" value=""/>
+            <br/>
+            密码 <input type="text" name="password" value=""/>
+            <br/>
+            角色 <select name="role"> 
+		<option value="Jeweler">Jeweler</option>
+		<option value="Bank">Bank</option>
+		<option value="Evaluator">Evaluator</option>
+		<option value="Repurchaser">Repurchaser</option>
+		<option value="Supervisor">Supervisor</option>
+	   </select>
+            <br/>
+            组织名 <input type="text" name="organization" value=""/>
+            <br/>
+            
+            <input type="submit" value="注册">
+	<div>若注册成功将自动跳转至登陆页面</div>
+        </div>
+
+        </form>
+    </body>
+</html>

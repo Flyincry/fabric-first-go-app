@@ -106,13 +106,36 @@
       	    <h2>可进行的操作</h2>
 	    {{if eq .Paper.State 1}}
         	       {{if eq .Role "Bank"}}
-	        <a href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">接受</a>
+	        <a href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">收到合约</a>
 	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
           	       {{end}}
 	    {{else if eq .Paper.State 2}}
        	      {{if eq .Role "Evaluator"}}
-	        <a href="/modifyPage?Action=Evaluate&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">评估</a>
+	        <a href="/modifyPage?Action=Evaluate&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">评估通过</a>
 	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+        	       {{end}}
+	    {{else if eq .Paper.State 3}}
+       	      {{if eq .Role "Repurchaser"}}
+	        <a href="/modifyPage?Action=ReadyRepo&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">回购就绪</a>
+	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+        	       {{end}}
+	    {{else if eq .Paper.State 4}}
+       	      {{if eq .Role "Bank"}}
+	        <a href="/modifyPage?Action=Accept&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">确定放款</a>
+	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+        	       {{end}}
+	    {{else if eq .Paper.State 5}}
+       	      {{if eq .Role "Supervisor"}}
+	        <a href="/modifyPage?Action=Supervise&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">同意监管</a>
+        	       {{end}}
+	    {{else if eq .Paper.State 6}}
+       	      {{if eq .Role "Jeweler"}}
+	        <a href="/modifyPage?Action=Payback&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">本金返还</a>
+	        <a href="/modifyPage?Action=Default&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">认定违约</a>
+        	       {{end}}
+	    {{else if eq .Paper.State 8}}
+       	      {{if eq .Role "Repurchaser"}}
+	        <a href="/modifyPage?Action=Repurchase&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">执行回购</a>
         	       {{end}}
 	    {{end}}
 	    <a href="/home/welcome">返回首页</a><br/>

@@ -22,7 +22,7 @@ func WebStart(app *controllers.Application) {
 	http.HandleFunc("/query", app.QueryInfo)
 	http.HandleFunc("/modifyPage", app.ModifyShow)
 	http.HandleFunc("/modify", app.Modify)
-	http.HandleFunc("/Apply", app.Apply)
+	//http.HandleFunc("/Apply", app.Apply)
 
 	http.HandleFunc("/", app.Account)
 	http.HandleFunc("/home", app.Account)
@@ -35,6 +35,9 @@ func WebStart(app *controllers.Application) {
 	http.HandleFunc("/QueryChannel", app.QueryChannel)
 	http.HandleFunc("/CreateChannelShow", app.CreateChannelShow)
 	http.HandleFunc("/CreateChannel", app.CreateChannel)
+
+	http.HandleFunc("/RegistPage", app.RegistPage)
+	http.HandleFunc("/Regist", app.Regist)
 
 	fmt.Println("启动Web服务, 监听端口号: 9000")
 
