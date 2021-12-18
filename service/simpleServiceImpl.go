@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"strconv"
+	"time"
 
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 )
@@ -53,28 +53,27 @@ func (t *ServiceHandler) Apply(paperNumber, jeweler, applyDateTime, financialAmo
 }
 
 func (t *ServiceHandler) Action(paper InventoryFinancingPaper, Action string) (string, error) {
+	now := time.Now().Format("2006-01-02 15:04:05")
 	var comm []string
 	switch Action {
-	case "Accept":
-		comm = []string{Action, paper.Jeweler, paper.PaperNumber, paper.AcceptDateTime}
-	case "Apply":
-		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.ApplyDateTime, strconv.Itoa(paper.FinancingAmount)}
-	case "Default", "QueryPaper", "Reject":
-		comm = []string{Action, paper.Jeweler, paper.PaperNumber}
+	case "Accept", "Payback", "Repurchase":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, now} //4
+	case "Supervise", "Default", "QueryPaper", "Reject":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler} //3
+	case "Apply", "Revise":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.FinancingAmount, now} //5
 	case "Evaluate":
-		comm = []string{Action, paper.Jeweler, paper.PaperNumber, paper.Evaluator, paper.EvalDateTime}
-	case "Payback":
-		comm = []string{Action, paper.Jeweler, paper.PaperNumber, paper.PaidbackDateTime}
-	case "ReadyRepo":
-		comm = []string{Action, paper.Jeweler, paper.PaperNumber, paper.Repurchaser, paper.ReadyDateTime}
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Evaluator, paper.EvalType, paper.EvalQualityProportion, paper.EvalAmount, now} //8
 	case "Receive":
-		comm = []string{Action, paper.Jeweler, paper.Bank, paper.PaperNumber, paper.ReceiveDateTime}
-	case "Repurchase":
-		comm = []string{Action, paper.Jeweler, paper.PaperNumber, paper.RepurchaseDateTime}
-	case "Revise":
-		comm = []string{Action, paper.Jeweler, paper.PaperNumber, paper.ReviseDateTime, strconv.Itoa(paper.FinancingAmount)}
-	case "Supervise":
-		comm = []string{Action, paper.Jeweler, paper.Supervisor, paper.EndDate, paper.PaperNumber}
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Bank, now} //5
+	case "ReadyRepo":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Repurchaser, now} //5
+	case "PutInStorage":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Supervisor, paper.StorageAmount, paper.StorageType, paper.StorageAddress, paper.EndDate, now} //9
+	case "OfferProductInfo":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Productor, paper.ProductType, paper.ProductAmount, paper.ProductDate, now} //8
+	case "OfferLisenceInfo":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.BrandCompany, paper.GrantedObject, paper.GrantedStartDate, paper.GrantedEndDate, now} //9
 	}
 
 	var response channel.Response
@@ -86,6 +85,10 @@ func (t *ServiceHandler) Action(paper InventoryFinancingPaper, Action string) (s
 		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3])}})
 	case 5:
 		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3]), []byte(comm[4])}})
+	case 8:
+		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3]), []byte(comm[4]), []byte(comm[5]), []byte(comm[6]), []byte(comm[7])}})
+	case 9:
+		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3]), []byte(comm[4]), []byte(comm[5]), []byte(comm[6]), []byte(comm[7]), []byte(comm[8])}})
 	}
 
 	if err != nil {
@@ -105,7 +108,7 @@ func (t *ServiceHandler) CreateChan(ChannelName string) {
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
 
-func (t *ServiceHandler) CreateOrg(OrgID string) (error){
+func (t *ServiceHandler) CreateOrg(OrgID string) error {
 	cmd := exec.Command("./runme.sh", OrgID)
 	cmd.Dir = "/root/workspace/src/fabric-samples/test-network/addOrg3"
 	out, err := cmd.CombinedOutput()

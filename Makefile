@@ -1,4 +1,4 @@
-.PHONY: all dev clean build env-up env-down run
+.PHONY: all dev clean build env-up env-down run dbinit
 
 all: clean build env-up run
 
@@ -40,8 +40,18 @@ clean: env-down
 	@cd ${GOPATH}/src/fabric-samples/test-network && ./network.sh down
 	@echo "Clean up done ..."
 
-### dbinit 
+### DBINIT 
+dbinit:
+	@rm -rf ./dbinit
+	@cd ${GOPATH}/src/fabric-first-go-app/db/dbinit && go build && cp ./dbinit ../../
+	@chmod +x ./dbinit
+	@./dbinit
 
-### webup
+### WEBUP
+webup:
+	@cd ${GOPATH}/src/fabric-first-go-app/Webstart && go build && cp ./Webstart ../webstart
+	@chmod +x ./webstart
+	@./webstart
+
 
 ### airflow

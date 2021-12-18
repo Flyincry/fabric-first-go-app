@@ -29,15 +29,18 @@
     <div class="content">
         <h2>设置/修改</h2>
         <h4>动作规则：动作--执行者--应填写字段</h4>
-        <h5>创建合约--Jeweler--合约编号、珠宝商、融资金额、创建时间</h5>
-        <h5>收到合约--Bank--银行、收到合约时间</h5>
-        <h5>评估通过--Evaluator--评估方、评估通过时间</h5>
-        <h5>回购就绪--Repurchaser--回购方、回购就绪时间</h5>
-        <h5>确定放款--Bank--确定放款时间</h5>
-        <h5>同意监管--Bank--监管方、同意监管时间</h5>
-        <h5>本金返还--Jeweler--本金返还时间</h5>
+        <h5>①创建合约--Jeweler--合约编号、珠宝商、融资金额</h5>
+        <h5>②OfferProductInfo--Productor--生产商、货品种类、货品数量、货品生产日期</h5>
+        <h5>③OfferLisenceInfo--BrandCompany--品牌方、授权对象、授权开始日期、授权结束日期</h5>
+        <h5>④收到合约--Bank--银行</h5>
+        <h5>⑤评估通过--Evaluator--评估方、评估种类、评估质量、评估价值</h5>
+        <h5>⑥PutInStorage--Supervisor--监管方、仓库货品总量、储存货品种类、存储地址、储存结束日期</h5>
+        <h5>⑦回购就绪--Repurchaser--回购方</h5>
+        <h5>确定放款--Bank--无</h5>
+        <h5>开始监管--Bank--无</h5>
+        <h5>本金返还--Jeweler--无</h5>
         <h5>认定违约--Jeweler--无</h5>
-        <h5>执行回购--Repurchaser--执行回购时间</h5>
+        <h5>执行回购--Repurchaser--无</h5>
         <h5>拒绝--Jeweler/Bank/Evaluator/Repurchaser--无</h5>
         <form action="/modify" method="post">
           <p>
@@ -47,19 +50,19 @@
               </span>
           </p>
           <p>
-              <span>合约编号：</span>
+              <span>①合约编号：</span>
               <span>
                 <input type="text" {{if ne .Action "Apply"}} readonly="readonly" style="color:grey" {{end}} name="paperNumber" value="{{.Paper.PaperNumber}}"     >
               </span>
           </p>
           <p>
-              <span>珠宝商：</span>
+              <span>①珠宝商：</span>
               <span>
                 <input type="text" {{if ne .Action "Apply"}} readonly="readonly" style="color:grey" {{end}} name="jeweler" value="{{.Paper.Jeweler}}"     >
               </span>
           </p>
           <p>
-              <span>融资金额：</span>
+              <span>①融资金额：</span>
               <span>
                 <input type="text" {{if ne .Action "Apply"}} readonly="readonly" style="color:grey" {{end}} name="financingAmount" value="{{.Paper.FinancingAmount}}"    >
               </span>
@@ -67,79 +70,181 @@
           <p>
               <span>创建时间：</span>
               <span>
-                <input type="text" {{if ne .Action "Apply"}} readonly="readonly" style="color:grey" {{end}} name="applyDateTime" value="{{.Paper.ApplyDateTime}}"   >
+                <input type="text"  readonly="readonly" style="color:grey"  name="applyDateTime" value="{{.Paper.ApplyDateTime}}"   >
               </span>
           </p>
           <p>
-              <span>银行：</span>
+              <span>②生产商：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productor" value="{{.Paper.Productor}}"   >
+              </span>
+          </p>
+          <p>
+              <span>②货品种类：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productType" value="{{.Paper.ProductType}}"   >
+              </span>
+          </p>
+          <p>
+              <span>②货品数量：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productAmount" value="{{.Paper.ProductAmount}}"   >
+              </span>
+          </p>
+          <p>
+              <span>②货品生产日期：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productDate" value="{{.Paper.ProductDate}}"   >
+              </span>
+          </p>
+          <p>
+              <span>货品信息更新日期：</span>
+              <span>
+                <input type="text"  readonly="readonly" style="color:grey"  name="productInfoUpdateTime" value="{{.Paper.ProductInfoUpdateTime}}"   >
+              </span>
+          </p>
+          <p>
+              <span>③品牌方：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="brandCompany" value="{{.Paper.BrandCompany}}"   >
+              </span>
+          </p>
+          <p>
+              <span>③授权对象：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="grantedObject" value="{{.Paper.GrantedObject}}"   >
+              </span>
+          </p>
+          <p>
+              <span>③授权开始日期：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="grantedStartDate" value="{{.Paper.GrantedStartDate}}"   >
+              </span>
+          </p>
+          <p>
+              <span>③授权结束日期：</span>
+              <span>
+                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="grantedEndDate" value="{{.Paper.GrantedEndDate}}"   >
+              </span>
+          </p>
+          <p>
+              <span>授权信息更新日期：</span>
+              <span>
+                <input type="text"  readonly="readonly" style="color:grey"  name="grantedInfoUpdateTime" value="{{.Paper.GrantedInfoUpdateTime}}"   >
+              </span>
+          </p>
+          <p>
+              <span>④银行：</span>
               <span>
                 <input type="text" {{if ne .Action "Receive"}} readonly="readonly" style="color:grey" {{end}} name="bank" value="{{.Paper.Bank}}"   >
               </span>
           </p>
           <p>
-              <span>评估方：</span>
+              <span>银行确认收到合约时间：</span>
+              <span>
+                <input type="text"  readonly="readonly" style="color:grey"   name="receiveDateTime" value="{{.Paper.ReceiveDateTime}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑤评估方：</span>
               <span>
                 <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evaluator" value="{{.Paper.Evaluator}}"   >
               </span>
           </p>
           <p>
-              <span>回购方：</span>
+              <span>⑤评估种类：</span>
+              <span>
+                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evalType" value="{{.Paper.EvalType}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑤评估质量：</span>
+              <span>
+                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evalQualityProportion" value="{{.Paper.EvalQualityProportion}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑤评估价值：</span>
+              <span>
+                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evalAmount" value="{{.Paper.EvalAmount}}"   >
+              </span>
+          </p>
+          <p>
+              <span>评估时间：</span>
+              <span>
+                <input type="text"  readonly="readonly" style="color:grey" name="evalDateTime" value="{{.Paper.EvalDateTime}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑥监管方：</span>
+              <span>
+                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="supervisor" value="{{.Paper.Supervisor}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑥仓库货品总量：</span>
+              <span>
+                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="storageAmount" value="{{.Paper.StorageAmount}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑥储存货品种类：</span>
+              <span>
+                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="storageType" value="{{.Paper.StorageType}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑥储存货品地址：</span>
+              <span>
+                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="storageAddress" value="{{.Paper.StorageAddress}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑥储存结束日期：</span>
+              <span>
+                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="endDate" value="{{.Paper.EndDate}}"   >
+              </span>
+          </p>
+          <p>
+              <span>出具仓单的时间：</span>
+              <span>
+                <input type="text"  readonly="readonly" style="color:grey"  name="storageInfoUpdate" value="{{.Paper.StorageInfoUpdate}}"   >
+              </span>
+          </p>
+          <p>
+              <span>⑦回购方：</span>
               <span>
                 <input type="text" {{if ne .Action "ReadyRepo"}} readonly="readonly" style="color:grey" {{end}} name="repurchaser" value="{{.Paper.Repurchaser}}"   >
               </span>
           </p>
           <p>
-              <span>监管方：</span>
+              <span>回购就绪时间：</span>
               <span>
-                <input type="text" {{if ne .Action "Supervise"}} readonly="readonly" style="color:grey" {{end}} name="supervisor" value="{{.Paper.Supervisor}}"   >
-              </span>
-          </p>
-          <p>
-              <span>修订时间：</span>
-              <span>
-                <input type="text" {{if ne .Action "Revise"}} readonly="readonly" style="color:grey" {{end}}  name="reviseDateTime" value="{{.Paper.ReviseDateTime}}"   >
+                <input type="text"  readonly="readonly" style="color:grey"   name="readyDateTime" value="{{.Paper.ReadyDateTime}}"   >
               </span>
           </p>
           <p>
               <span>确定放款时间：</span>
               <span>
-                <input type="text" {{if ne .Action "Accept"}} readonly="readonly" style="color:grey" {{end}}  name="acceptDateTime" value="{{.Paper.AcceptDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>回购就绪时间：</span>
-              <span>
-                <input type="text" {{if ne .Action "ReadyRepo"}} readonly="readonly" style="color:grey" {{end}}  name="readyDateTime" value="{{.Paper.ReadyDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>评估通过时间：</span>
-              <span>
-                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}}  name="evalDateTime" value="{{.Paper.EvalDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>收到合约时间：</span>
-              <span>
-                <input type="text" {{if ne .Action "Receive"}} readonly="readonly" style="color:grey" {{end}}  name="receiveDateTime" value="{{.Paper.ReceiveDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>同意监管时间：</span>
-              <span>
-                <input type="text" {{if ne .Action "Supervise"}} readonly="readonly" style="color:grey" {{end}} name="endDateTime" value="{{.Paper.EndDate}}"   >
+                <input type="text"  readonly="readonly" style="color:grey"   name="acceptDateTime" value="{{.Paper.AcceptDateTime}}"   >
               </span>
           </p>
           <p>
               <span>本金返还时间：</span>
               <span>
-                <input type="text" {{if ne .Action "Payback"}} readonly="readonly" style="color:grey" {{end}} name="paidBackDateTime" value="{{.Paper.PaidbackDateTime}}"   >
+                <input type="text"  readonly="readonly" style="color:grey"  name="paidBackDateTime" value="{{.Paper.PaidbackDateTime}}"   >
               </span>
           </p>
           <p>
               <span>执行回购时间：</span>
               <span>
-                <input type="text" {{if ne .Action "Repurchase"}} readonly="readonly" style="color:grey" {{end}} name="repurchaseDateTime" value="{{.Paper.RepurchaseDateTime}}"   >
+                <input type="text"  readonly="readonly" style="color:grey"  name="repurchaseDateTime" value="{{.Paper.RepurchaseDateTime}}"   >
+              </span>
+          </p>
+          <p>
+             <span>修订时间：</span>
+              <span>
+                <input type="text"  readonly="readonly" style="color:grey"   name="reviseDateTime" value="{{.Paper.ReviseDateTime}}"   >
               </span>
           </p>
         <input type="submit" value="提交"/>

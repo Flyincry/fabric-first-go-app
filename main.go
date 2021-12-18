@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/db/model"
-	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/db/utils"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/sdkenv"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/service"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/web"
@@ -18,24 +16,6 @@ const (
 )
 
 func main() {
-	// 清空数据库
-	utils.CleanTable("webuser")
-	// 创建初始用户
-	user1 := model.User{
-		Name:         "gyy",
-		Password:     "gyy123",
-		Role:         "Jeweler",
-		Organization: "org1",
-	}
-	user1.AddUser()
-	user2 := model.User{
-		Name:         "ztz",
-		Password:     "ztz123",
-		Role:         "Bank",
-		Organization: "org2",
-	}
-	user2.AddUser()
-
 	// init orgs information
 	orgs := []*sdkenv.OrgInfo{
 		{
@@ -65,7 +45,7 @@ func main() {
 		OrdererOrgName:   "OrdererOrg",
 		OrdererEndpoint:  "orderer.example.com",
 		ChaincodeID:      cc_name,
-		ChaincodePath:    os.Getenv("GOPATH") + "/src/fabric-first-go-app/IFC/",
+		ChaincodePath:    os.Getenv("GOPATH") + "/src/fabric-first-go-app/newIFC/",
 		ChaincodeVersion: cc_version,
 	}
 
@@ -108,6 +88,7 @@ func main() {
 	fmt.Println(">> 启动web服务......")
 	app := controllers.Application{
 		Fabric: serviceHandler,
+		SDK:    sdk,
 	}
 	web.WebStart(&app)
 	fmt.Println(">> 启动web服务......")

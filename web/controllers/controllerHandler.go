@@ -7,10 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 
+	"github.com/gorilla/schema"
 	"github.com/gorilla/sessions"
+	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/db/model"
+	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/sdkenv"
 	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/service"
 )
 
@@ -18,6 +20,7 @@ var store = sessions.NewCookieStore([]byte("mysession"))
 
 type Application struct {
 	Fabric *service.ServiceHandler
+	SDK    *fabsdk.FabricSDK
 }
 
 func (app *Application) RegistPage(w http.ResponseWriter, r *http.Request) {
@@ -50,7 +53,7 @@ func (app *Application) Regist(w http.ResponseWriter, r *http.Request) {
 			showView(w, r, "Regist.html", data)
 		} else {
 			fmt.Println("已添加如下用户", u1)
-			showView(w, r, "Regist.html", nil)
+			showView(w, r, "login.html", nil)
 		}
 	}
 
@@ -76,6 +79,8 @@ func (app *Application) Login(response http.ResponseWriter, request *http.Reques
 			session, _ := store.Get(request, "mysession")
 			session.Values["username"] = username
 			session.Values["role"] = u.Role
+			session.Values["orgid"] = u.OrgID
+			session.Values["channel"] = request.Form.Get("channel")
 			session.Save(request, response)
 			http.Redirect(response, request, "/home/welcome", http.StatusSeeOther)
 		} else {
@@ -168,29 +173,29 @@ func (app *Application) ModifyShow(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) Modify(w http.ResponseWriter, r *http.Request) {
 	// 获取提交数据
-	financingAmount, _ := strconv.Atoi(r.FormValue("financingAmount"))
-	paper := service.InventoryFinancingPaper{
-		Jeweler:            r.FormValue("jeweler"),
-		PaperNumber:        r.FormValue("paperNumber"),
-		FinancingAmount:    financingAmount,
-		ApplyDateTime:      r.FormValue("applyDateTime"),
-		ReviseDateTime:     r.FormValue("reviseDateTime"),
-		AcceptDateTime:     r.FormValue("acceptDateTime"),
-		ReadyDateTime:      r.FormValue("readyDateTime"),
-		EvalDateTime:       r.FormValue("evalDateTime"),
-		ReceiveDateTime:    r.FormValue("receiveDateTime"),
-		EndDate:            r.FormValue("endDateTime"),
-		PaidbackDateTime:   r.FormValue("paidBackDateTime"),
-		RepurchaseDateTime: r.FormValue("repurchaseDateTime"),
-		Bank:               r.FormValue("bank"),
-		Evaluator:          r.FormValue("evaluator"),
-		Repurchaser:        r.FormValue("repurchaser"),
-		Supervisor:         r.FormValue("supervisor"),
-	}
+	var paper service.InventoryFinancingPaper
+	var decoder = schema.NewDecoder()
+	decoder.SetAliasTag("json")
+	err := r.ParseForm()
+	err = decoder.Decode(&paper, r.PostForm)
+	fmt.Println(paper)
+
+	// 执行链码
 	action := r.FormValue("Action")
 
-	// 调用业务层, 反序列化
-	app.Fabric.Action(paper, action)
+	// 创建服务句柄, 调用业务层, 反序列化
+	session, _ := store.Get(r, "mysession")
+	org := sdkenv.OrgInfo{
+		OrgName: "Org" + session.Values["orgid"].(string),
+		OrgUser: "User1",
+	}
+	channel, _ := session.Values["channel"].(string)
+	serviceHandler, err := service.InitService("simplecc", channel, &org, app.SDK)
+	res, err := serviceHandler.Action(paper, action)
+	//res, err := app.Fabric.Action(paper, action)
+	fmt.Println(paper)
+	fmt.Println(res)
+	fmt.Println(err)
 
 	// 响应客户端
 	r.Form.Set("jeweler", paper.Jeweler)
@@ -268,7 +273,7 @@ func (app *Application) CreateChannel(w http.ResponseWriter, r *http.Request) {
 	app.QueryChannel(w, r)
 }
 
-// 根据指定的 Key 查询信息
+// 根据指定的 Key 查询某个组织所在的通道
 func (app *Application) QueryChannel(w http.ResponseWriter, r *http.Request) {
 	// 获取提交数据
 	OrgName := r.FormValue("OrgName")

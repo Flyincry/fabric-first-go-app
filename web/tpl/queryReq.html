@@ -52,52 +52,120 @@
                       <span>{{.Paper.ApplyDateTime}}</span>
                   </p>
                   <p>
+                      <span>制造商：</span>
+                      <span>{{.Paper.Productor}}</span>
+                  </p>
+                  <p>
+                      <span>货品种类：</span>
+                      <span>{{.Paper.ProductType}}</span>
+                  </p>
+                  <p>
+                      <span>货品数量：</span>
+                      <span>{{.Paper.ProductAmount}}</span>
+                  </p>
+                  <p>
+                      <span>货品生产日期：</span>
+                      <span>{{.Paper.ProductDate}}</span>
+                  </p>
+                  <p>
+                      <span>货品信息更新日期：</span>
+                      <span>{{.Paper.ProductInfoUpdateTime}}</span>
+                  </p>
+                  <p>
+                      <span>品牌方：</span>
+                      <span>{{.Paper.BrandCompany}}</span>
+                  </p>
+                  <p>
+                      <span>授权对象：</span>
+                      <span>{{.Paper.GrantedObject}}</span>
+                  </p>
+                  <p>
+                      <span>授权开始日期：</span>
+                      <span>{{.Paper.GrantedStartDate}}</span>
+                  </p>
+                  <p>
+                      <span>授权结束日期：</span>
+                      <span>{{.Paper.GrantedEndDate}}</span>
+                  </p>
+                  <p>
+                      <span>授权信息更新日期：</span>
+                      <span>{{.Paper.GrantedInfoUpdateTime}}</span>
+                  </p>
+                  <p>
                       <span>银行：</span>
                       <span>{{.Paper.Bank}}</span>
+                  </p>
+                  <p>
+                      <span>银行确认收到合约时间：</span>
+                      <span>{{.Paper.ReceiveDateTime}}</span>
                   </p>
                   <p>
                       <span>评估方：</span>
                       <span>{{.Paper.Evaluator}}</span>
                   </p>
                   <p>
-                      <span>回购方：</span>
-                      <span>{{.Paper.Repurchaser}}</span>
+                      <span>评估种类：</span>
+                      <span>{{.Paper.EvalType}}</span>
                   </p>
                   <p>
-                      <span>监管方：</span>
-                      <span>{{.Paper.Supervisor}}</span>
+                      <span>评估质量：</span>
+                      <span>{{.Paper.EvalQualityProportion}}</span>
                   </p>
                   <p>
-                      <span>修订时间：</span>
-                      <span>{{.Paper.ReviseDateTime}}</span>
-                  </p>
-                  <p>
-                      <span>接受时间：</span>
-                      <span>{{.Paper.AcceptDateTime}}</span>
-                  </p>
-                  <p>
-                      <span>回购就绪时间：</span>
-                      <span>{{.Paper.ReadyDateTime}}</span>
+                      <span>评估价值：</span>
+                      <span>{{.Paper.EvalAmount}}</span>
                   </p>
                   <p>
                       <span>评估时间：</span>
                       <span>{{.Paper.EvalDateTime}}</span>
                   </p>
                   <p>
-                      <span>接收时间：</span>
-                      <span>{{.Paper.ReceiveDateTime}}</span>
+                      <span>监管方：</span>
+                      <span>{{.Paper.Supervisor}}</span>
                   </p>
                   <p>
-                      <span>监管结束时间：</span>
+                      <span>仓库货品总量：</span>
+                      <span>{{.Paper.StorageAmount}}</span>
+                  </p>
+                  <p>
+                      <span>储存货品种类：</span>
+                      <span>{{.Paper.StorageType}}</span>
+                  </p>
+                  <p>
+                      <span>储存货品地址：</span>
+                      <span>{{.Paper.StorageAddress}}</span>
+                  </p>
+                  <p>
+                      <span>储存结束日期：</span>
                       <span>{{.Paper.EndDate}}</span>
                   </p>
                   <p>
-                      <span>赎回时间：</span>
+                      <span>出具仓单的时间：</span>
+                      <span>{{.Paper.StorageInfoUpdate}}</span>
+                  </p>
+                  <p>
+                      <span>回购方：</span>
+                      <span>{{.Paper.Repurchaser}}</span>
+                  </p>
+                  <p>
+                      <span>回购就绪时间：</span>
+                      <span>{{.Paper.ReadyDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>确定放款时间：</span>
+                      <span>{{.Paper.AcceptDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>本金返还时间：</span>
                       <span>{{.Paper.PaidbackDateTime}}</span>
                   </p>
                   <p>
-                      <span>回购时间：</span>
+                      <span>执行回购时间：</span>
                       <span>{{.Paper.RepurchaseDateTime}}</span>
+                  </p>
+                  <p>
+                      <span>修订时间：</span>
+                      <span>{{.Paper.ReviseDateTime}}</span>
                   </p>
         </div>
     </div>
@@ -105,35 +173,41 @@
 	    <!-- 判断paper状态和用户身份，来展示可操作的动作 -->
       	    <h2>可进行的操作</h2>
 	    {{if eq .Paper.State 1}}
+        	       {{if eq .Role "Productor"}}
+	        <a href="/modifyPage?Action=OfferProductInfo&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">上传产品信息</a>
+        	       {{else if eq .Role "BrandCompany"}}
+	        <a href="/modifyPage?Action=OfferLisenceInf&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">上传授权信息</a>
+          	       {{end}}
+	    {{else if and (ne .Paper.Productor "") (ne .Paper.BrandCompany "")}}
         	       {{if eq .Role "Bank"}}
-	        <a href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">收到合约</a>
-	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+	        <a href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">确认收到融资申请</a>
           	       {{end}}
 	    {{else if eq .Paper.State 2}}
        	      {{if eq .Role "Evaluator"}}
 	        <a href="/modifyPage?Action=Evaluate&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">评估通过</a>
 	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
-        	       {{end}}
-	    {{else if eq .Paper.State 3}}
-       	      {{if eq .Role "Repurchaser"}}
+       	      {{else if eq .Role "Repurchaser"}}
 	        <a href="/modifyPage?Action=ReadyRepo&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">回购就绪</a>
 	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
+       	      {{else if eq .Role "Supervisor"}}
+	        <a href="/modifyPage?Action=PutInStorage&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">出具仓单</a>
+	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
         	       {{end}}
-	    {{else if eq .Paper.State 4}}
+	    {{else if and (ne .Paper.Supervisor "") (and (ne .Paper.Evaluator "") (ne .Paper.Repurchaser ""))}}
        	      {{if eq .Role "Bank"}}
 	        <a href="/modifyPage?Action=Accept&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">确定放款</a>
 	        <a href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">拒绝</a>
         	       {{end}}
-	    {{else if eq .Paper.State 5}}
+	    {{else if eq .Paper.State 3}}
        	      {{if eq .Role "Supervisor"}}
-	        <a href="/modifyPage?Action=Supervise&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">同意监管</a>
+	        <a href="/modifyPage?Action=Supervise&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">开始监管</a>
         	       {{end}}
-	    {{else if eq .Paper.State 6}}
+	    {{else if eq .Paper.State 4}}
        	      {{if eq .Role "Jeweler"}}
 	        <a href="/modifyPage?Action=Payback&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">本金返还</a>
 	        <a href="/modifyPage?Action=Default&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">认定违约</a>
         	       {{end}}
-	    {{else if eq .Paper.State 8}}
+	    {{else if eq .Paper.State 6}}
        	      {{if eq .Role "Repurchaser"}}
 	        <a href="/modifyPage?Action=Repurchase&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">执行回购</a>
         	       {{end}}
