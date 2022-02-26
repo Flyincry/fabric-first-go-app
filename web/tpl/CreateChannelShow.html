@@ -1,52 +1,141 @@
-{{/*
-    author: CBIT
-*/}}
-<html>
-<head>
-    <title>创建通道</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Create Channel</title>
 
-<div>
-        <h3>Welcome {{.Username}}, indentity: {{.Role}} </h3>
-        <a href="/home/logout">Logout</a>
-</div>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/checkout/">
 
-<div class="common menu">
-    <ul>
-        <li><a href="/home/welcome"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
-        <li><a href="/query">查询信息</a></li>
-        <li><a href="/CreateChannelShow">创建通道</a></li>
-        <li><a href="/QueryChannel">查询通道</a></li>
-{{if eq .Role "Jeweler"}}
-        <li><a href="/modifyPage?Action=Apply">新建合约</a></li>
-{{end}}
-    </ul>
-</div>
+    
 
-<div class="common main">
-    <div class="content">
-        <h2>设置/修改</h2>
-        <form action="/CreateChannel" method="post">
-          <p>
-              <span>自定义通道名：</span>
-              <span>
-                <input type="text" name="ChannelName" value="">
-              </span>
-              <span>(第一个字符必须是小写字母)</span>
-          </p>
-        <input type="submit" value="提交"/>
-        </form>
-        <div class="calink">
-            <a href="/index.html">返回首页</a><br/>
+    <!-- Bootstrap core CSS -->
+<link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .btn-lg{
+        display: block;
+        margin: auto;
+        margin-top: 5px;
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/dist/css/form-validation.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/home/welcome">CBIT</a>
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/home/welcome">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/CreateChannelShow">Create Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/QueryChannel">Query Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/queryPage">Query Paper</a>
+            </li>
+            {{if eq .Role "Jeweler"}}
+            <li class="nav-item">
+              <a class="nav-link" href="/modifyPage?Action=Apply">Create Paper</a>
+            </li>
+            {{end}}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Setting</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex"  action="/home/logout" method="post">
+            <a class="nav-link">{{.Username}}</a>
+            <button class="btn btn-outline-success">Logout</button>
+          </form>
         </div>
+      </div>
+    </nav>   
+    
+<div class="container">
+  <main>
+    <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+      <div class="lh-1">
+        <h1 class="h6 mb-0 text-white lh-1">Create Channel</h1>
+      </div>
     </div>
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
+      <p class="pb-3 mb-0 small lh-sm">
+        <strong class="pb-2 d-block text-gray-dark">Note</strong>
+        To create a channel, you only need to come up with a name of it. The first character of name must be a lowercase letter. 
+      </p>
+    </div>
+    <form action="/CreateChannel" method="post">
+      <div class="row g-3">
+        <div class="col-sm">
+          <label for="action" class="form-label">Channel Name</label>
+          <input type="text" class="form-control" id="action" name="ChannelName" placeholder="" value="">
+          <div class="invalid-feedback">
+            Valid action is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <button class="w-50 btn btn-primary btn-lg bg-purple" type="submit" data-toggle="modal" data-target="#myModal">Create</button>
+    </form>
+
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Command Sent Successfully</h4>
+            </div>
+            <div class="modal-body">The process of creation will take about 10 seconds to complete. Please wait for a while.</div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+  </main>
+
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <p class="col-md-4 mb-0 text-muted">&copy; 2022 CBIT</p>
+
+    <ul class="nav col-md-4 justify-content-end">
+      <li class="nav-item"><a href="/home/welcome" class="nav-link px-2 text-muted">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+    </ul>
+  </footer>
 </div>
 
-<div class="common footer">
-    区块链智能科技中心出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
-</div>
+    <script src="/assets/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
+      <script src="/assets/dist/js/form-validation.js"></script>
+  </body>
 </html>

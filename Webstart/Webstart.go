@@ -62,6 +62,7 @@ func main() {
 	fmt.Println(">> 启动web服务......")
 	app := controllers.Application{
 		Fabric: serviceHandler,
+		SDK:    sdk,
 	}
 	web.WebStart(&app)
 	fmt.Println(">> 启动web服务......")

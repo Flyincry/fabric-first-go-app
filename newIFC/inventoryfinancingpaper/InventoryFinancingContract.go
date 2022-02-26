@@ -29,79 +29,49 @@ func (c *Contract) InitLedger(ctx contractapi.TransactionContextInterface) error
 	papers := []InventoryFinancingPaper{
 		InventoryFinancingPaper{
 			PaperNumber:           "111",
-			Jeweler:               "Prius",
+			Jeweler:               "宝琳国金",
+			JewelerAddr:           "深圳市罗湖区水贝水田二街3号宝琳国金大厦2栋",
 			ApplyDateTime:         "202109",
-			FinancingAmount:       "100000",
-			Productor:             "kaka",
-			ProductType:           "Gold",
-			ProductAmount:         "4000000",
+			FinancingAmount:       "250,000,000",
+			PledgeType:            "K金",
+			PledgeAmount:          "1000kg",
+			PledgeApraisedValue:   "261,000,000",
+			Productor:             "深圳罗玛星珠宝首饰有限公司",
+			ProductType:           "K金",
+			ProductAmount:         "1000kg",
 			ProductDate:           "202106",
 			ProductInfoUpdateTime: "202111",
-			BrandCompany:          "Chou Tai Fork",
-			GrantedObject:         "cici retailer",
+			BrandCompany:          "周大生",
+			BrandCompanyAddr:      "深圳市罗湖区翠竹街道布心路3033号水贝壹号A座19-23层",
+			GrantedObject:         "宝琳国金",
 			GrantedStartDate:      "202001",
 			GrantedEndDate:        "202203",
 			GrantedInfoUpdateTime: "202111",
-			AuthorizedDate:        "202110",
-			Bank:                  "Heng Seng",
+			Bank:                  "深圳发展银行",
 			ReceiveDateTime:       "202111",
-			Evaluator:             "coco",
+			Evaluator:             "深圳国艺珠宝艺术品资产评估有限公司",
 			EvalDateTime:          "202112",
-			EvalType:              "Gold",
+			EvalType:              "K金",
 			EvalQualityProportion: "99%",
-			EvalAmount:            "10000",
-			Supervisor:            "Pika",
-			StorageAmount:         "40000",
-			StorageType:           "Gold",
-			StorageAddress:        "Earth street ka",
+			EvalAmount:            "1000kg",
+			EvalPrice:             "260,000,000",
+			Supervisor:            "宝时云仓",
+			StorageAmount:         "1000kg",
+			StorageType:           "K金",
+			StorageAddress:        "松江一仓-上海松江区泗砖路351号7号楼",
+			StartDate:             "202103",
 			EndDate:               "202203",
 			StorageInfoUpdate:     "202111",
-			Repurchaser:           "Chou Seng Seng",
-			AcceptedDateTime:      "202111",
+			Repurchaser:           "千禧之星",
+			ReadyDateTime:         "",
+			AcceptDateTime:        "202111",
 			PaidbackDateTime:      "",
 			RepurchaseDateTime:    "202203",
 			state:                 PAIDBACK,
 			prevstate:             SUPERVISING,
 			class:                 "",
 			key:                   "",
-		},
-		InventoryFinancingPaper{
-			PaperNumber:           "222",
-			Jeweler:               "Mustang",
-			ApplyDateTime:         "202110",
-			FinancingAmount:       "222222",
-			Productor:             "haha",
-			ProductType:           "Diamond",
-			ProductAmount:         "20000",
-			ProductDate:           "202006",
-			ProductInfoUpdateTime: "202101",
-			BrandCompany:          "Chou Seng Seng",
-			GrantedObject:         "retailer 2",
-			GrantedStartDate:      "202102",
-			GrantedEndDate:        "202109",
-			GrantedInfoUpdateTime: "202111",
-			AuthorizedDate:        "202109",
-			Bank:                  "China Bank",
-			ReceiveDateTime:       "202111",
-			Evaluator:             "kimi",
-			EvalDateTime:          "202111",
-			EvalType:              "Diamond",
-			EvalQualityProportion: "98%",
-			EvalAmount:            "250000",
-			Supervisor:            "pika",
-			StorageAmount:         "250000",
-			StorageType:           "Diamond",
-			StorageAddress:        "Jupiter",
-			EndDate:               "202211",
-			StorageInfoUpdate:     "202111",
-			Repurchaser:           "Chou Tai Fork",
-			AcceptedDateTime:      "202211",
-			PaidbackDateTime:      "202201",
-			RepurchaseDateTime:    "",
-			state:                 REPURCHADED,
-			prevstate:             SUPERVISING,
-			class:                 "",
-			key:                   "",
+			ReviseDateTime:        "",
 		},
 	}
 
@@ -118,8 +88,8 @@ func (c *Contract) InitLedger(ctx contractapi.TransactionContextInterface) error
 }
 
 // Apply creates a new inventory paper and stores it in the world state.
-func (c *Contract) Apply(ctx TransactionContextInterface, paperNumber string, jeweler string, financingAmount string, applyDateTime string) (*InventoryFinancingPaper, error) {
-	paper := InventoryFinancingPaper{PaperNumber: paperNumber, Jeweler: jeweler, FinancingAmount: financingAmount, ApplyDateTime: applyDateTime}
+func (c *Contract) Apply(ctx TransactionContextInterface, paperNumber string, jeweler string, jewelerAddr string, applyDateTime string, financingAmount string, pledgeType string, pledgeAmount string, pledgeApraisedValue string) (*InventoryFinancingPaper, error) {
+	paper := InventoryFinancingPaper{PaperNumber: paperNumber, Jeweler: jeweler, JewelerAddr: jewelerAddr, FinancingAmount: financingAmount, PledgeType: pledgeType, PledgeAmount: pledgeAmount, PledgeApraisedValue: pledgeApraisedValue, ApplyDateTime: applyDateTime}
 
 	paper.SetApplied()
 	paper.LogPrevState()
@@ -161,7 +131,7 @@ func (c *Contract) OfferProductInfo(ctx TransactionContextInterface, paperNumber
 }
 
 // OfferLisenceInfo means the brand company offer the lisence infomation and  stores it in the world state.
-func (c *Contract) OfferLisenceInfo(ctx TransactionContextInterface, paperNumber string, jeweler string, brandCompany string, grantedObject string, grantedStartDate string, grantedEndDate string, grantedInfoUpdateTime string) (*InventoryFinancingPaper, error) {
+func (c *Contract) OfferLisenceInfo(ctx TransactionContextInterface, paperNumber string, jeweler string, brandCompany string, brandCompanyAddr string, grantedObject string, grantedStartDate string, grantedEndDate string, grantedInfoUpdateTime string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 	if err != nil {
 		return nil, err
@@ -169,6 +139,7 @@ func (c *Contract) OfferLisenceInfo(ctx TransactionContextInterface, paperNumber
 	if paper.IsApplied() {
 		if paper.GetBrandCompany() == "" {
 			paper.SetBrandCompany(brandCompany)
+			paper.BrandCompanyAddr = brandCompanyAddr
 			paper.GrantedObject = grantedObject
 			paper.GrantedStartDate = grantedStartDate
 			paper.GrantedEndDate = grantedEndDate
@@ -215,7 +186,7 @@ func (c *Contract) Receive(ctx TransactionContextInterface, paperNumber string, 
 }
 
 //Evaluate updates a inventory paper to be evaluated
-func (c *Contract) Evaluate(ctx TransactionContextInterface, paperNumber string, jeweler string, evaluator string, evalType string, evalQualityProportion string, evalAmount string, evalDateTime string) (*InventoryFinancingPaper, error) {
+func (c *Contract) Evaluate(ctx TransactionContextInterface, paperNumber string, jeweler string, evaluator string, evalType string, evalQualityProportion string, evalAmount string, evalPrice string, evalDateTime string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 	if err != nil {
 		return nil, err
@@ -227,6 +198,7 @@ func (c *Contract) Evaluate(ctx TransactionContextInterface, paperNumber string,
 			paper.EvalQualityProportion = evalQualityProportion
 			paper.EvalAmount = evalAmount
 			paper.EvalDateTime = evalDateTime
+			paper.EvalPrice = evalPrice
 		}
 
 	}
@@ -273,7 +245,7 @@ func (c *Contract) ReadyRepo(ctx TransactionContextInterface, paperNumber string
 }
 
 //putInStorage updates a inventory paper to be put in storage
-func (c *Contract) PutInStorage(ctx TransactionContextInterface, paperNumber string, jeweler string, supervisor string, storageAmount string, storageType string, storageAddress string, endDate string, storageInfoUpdate string) (*InventoryFinancingPaper, error) {
+func (c *Contract) PutInStorage(ctx TransactionContextInterface, paperNumber string, jeweler string, supervisor string, storageAmount string, storageType string, storageAddress string, startdate string, endDate string, storageInfoUpdate string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 	if err != nil {
 		return nil, err
@@ -285,6 +257,7 @@ func (c *Contract) PutInStorage(ctx TransactionContextInterface, paperNumber str
 			paper.StorageAmount = storageAmount
 			paper.StorageType = storageType
 			paper.StorageAddress = storageAddress
+			paper.StartDate = startdate
 			paper.EndDate = endDate
 			paper.StorageInfoUpdate = storageInfoUpdate
 
@@ -315,7 +288,7 @@ func (c *Contract) Accept(ctx TransactionContextInterface, paperNumber string, j
 
 	if paper.GetEvaluator() != "" && paper.GetRepurchaser() != "" && paper.GetSupervisor() != "" {
 		paper.SetAccepted()
-		paper.AcceptedDateTime = acceptedDateTime
+		paper.AcceptDateTime = acceptedDateTime
 
 	}
 
@@ -333,7 +306,7 @@ func (c *Contract) Accept(ctx TransactionContextInterface, paperNumber string, j
 }
 
 // Supervising updates a inventory paper to be in supervising status and sets the next dealer
-func (c *Contract) Supervise(ctx TransactionContextInterface, paperNumber string, jeweler string, supervisor string) (*InventoryFinancingPaper, error) {
+func (c *Contract) Supervise(ctx TransactionContextInterface, paperNumber string, jeweler string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 
 	if err != nil {
@@ -404,7 +377,7 @@ func (c *Contract) Default(ctx TransactionContextInterface, paperNumber string, 
 }
 
 // Repurchase updates a inventory paper status to be repurchsed
-func (c *Contract) Repurchase(ctx TransactionContextInterface, jeweler string, paperNumber string, repurchaseDateTime string) (*InventoryFinancingPaper, error) {
+func (c *Contract) Repurchase(ctx TransactionContextInterface, paperNumber string, jeweler string, repurchaseDateTime string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 
 	if err != nil {
@@ -428,7 +401,7 @@ func (c *Contract) Repurchase(ctx TransactionContextInterface, jeweler string, p
 }
 
 // Reject a contract
-func (c *Contract) Reject(ctx TransactionContextInterface, jeweler string, paperNumber string) (*InventoryFinancingPaper, error) {
+func (c *Contract) Reject(ctx TransactionContextInterface, paperNumber string, jeweler string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 
 	if err != nil {
@@ -454,7 +427,7 @@ func (c *Contract) Reject(ctx TransactionContextInterface, jeweler string, paper
 }
 
 // Revise a contract
-func (c *Contract) Revise(ctx TransactionContextInterface, jeweler string, paperNumber string, financingAmount string) (*InventoryFinancingPaper, error) {
+func (c *Contract) Revise(ctx TransactionContextInterface, paperNumber string, jeweler string, financingAmount string, reviseDateTime string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 	if err != nil {
 		return nil, err
@@ -465,6 +438,7 @@ func (c *Contract) Revise(ctx TransactionContextInterface, jeweler string, paper
 	}
 
 	paper.FinancingAmount = financingAmount
+	paper.ReviseDateTime = reviseDateTime
 
 	paper.Reinstate()
 
@@ -478,7 +452,7 @@ func (c *Contract) Revise(ctx TransactionContextInterface, jeweler string, paper
 }
 
 // QueryPaper updates a inventory paper to be in received status and sets the next dealer
-func (c *Contract) QueryPaper(ctx TransactionContextInterface, jeweler string, paperNumber string) (*InventoryFinancingPaper, error) {
+func (c *Contract) QueryPaper(ctx TransactionContextInterface, paperNumber string, jeweler string) (*InventoryFinancingPaper, error) {
 	paper, err := ctx.GetPaperList().GetPaper(jeweler, paperNumber)
 
 	if err != nil {

@@ -1,263 +1,464 @@
-{{/*
-    author: CBIT
-*/}}
-<html>
-<head>
-    <title>修改合约</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Motify Paper</title>
 
-<div>
-        <h3>Welcome {{.Username}}, indentity: {{.Role}} </h3>
-        <a href="/home/logout">Logout</a>
-</div>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/checkout/">
 
-<div class="common menu">
-    <ul>
-        <li><a href="/home/welcome"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
-        <li><a href="/query">查询信息</a></li>
-        <li><a href="/CreateChannelShow">创建通道</a></li>
-        <li><a href="/QueryChannel">查询通道</a></li>
-{{if eq .Role "Jeweler"}}
-        <li><a href="/modifyPage?Action=Apply">新建合约</a></li>
-{{end}}
-    </ul>
-</div>
+    
 
-<div class="common main">
-    <div class="content">
-        <h2>设置/修改</h2>
-        <h4>动作规则：动作--执行者--应填写字段</h4>
-        <h5>①创建合约--Jeweler--合约编号、珠宝商、融资金额</h5>
-        <h5>②OfferProductInfo--Productor--生产商、货品种类、货品数量、货品生产日期</h5>
-        <h5>③OfferLisenceInfo--BrandCompany--品牌方、授权对象、授权开始日期、授权结束日期</h5>
-        <h5>④收到合约--Bank--银行</h5>
-        <h5>⑤评估通过--Evaluator--评估方、评估种类、评估质量、评估价值</h5>
-        <h5>⑥PutInStorage--Supervisor--监管方、仓库货品总量、储存货品种类、存储地址、储存结束日期</h5>
-        <h5>⑦回购就绪--Repurchaser--回购方</h5>
-        <h5>确定放款--Bank--无</h5>
-        <h5>开始监管--Bank--无</h5>
-        <h5>本金返还--Jeweler--无</h5>
-        <h5>认定违约--Jeweler--无</h5>
-        <h5>执行回购--Repurchaser--无</h5>
-        <h5>拒绝--Jeweler/Bank/Evaluator/Repurchaser--无</h5>
-        <form action="/modify" method="post">
-          <p>
-              <span>当前进行的操作：</span>
-              <span>
-                <input type="text" readonly="true" style="color:grey;" name="Action" value="{{.Action}}"     >
-              </span>
-          </p>
-          <p>
-              <span>①合约编号：</span>
-              <span>
-                <input type="text" {{if ne .Action "Apply"}} readonly="readonly" style="color:grey" {{end}} name="paperNumber" value="{{.Paper.PaperNumber}}"     >
-              </span>
-          </p>
-          <p>
-              <span>①珠宝商：</span>
-              <span>
-                <input type="text" {{if ne .Action "Apply"}} readonly="readonly" style="color:grey" {{end}} name="jeweler" value="{{.Paper.Jeweler}}"     >
-              </span>
-          </p>
-          <p>
-              <span>①融资金额：</span>
-              <span>
-                <input type="text" {{if ne .Action "Apply"}} readonly="readonly" style="color:grey" {{end}} name="financingAmount" value="{{.Paper.FinancingAmount}}"    >
-              </span>
-          </p>
-          <p>
-              <span>创建时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"  name="applyDateTime" value="{{.Paper.ApplyDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>②生产商：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productor" value="{{.Paper.Productor}}"   >
-              </span>
-          </p>
-          <p>
-              <span>②货品种类：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productType" value="{{.Paper.ProductType}}"   >
-              </span>
-          </p>
-          <p>
-              <span>②货品数量：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productAmount" value="{{.Paper.ProductAmount}}"   >
-              </span>
-          </p>
-          <p>
-              <span>②货品生产日期：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferProductInfo"}} readonly="readonly" style="color:grey" {{end}} name="productDate" value="{{.Paper.ProductDate}}"   >
-              </span>
-          </p>
-          <p>
-              <span>货品信息更新日期：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"  name="productInfoUpdateTime" value="{{.Paper.ProductInfoUpdateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>③品牌方：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="brandCompany" value="{{.Paper.BrandCompany}}"   >
-              </span>
-          </p>
-          <p>
-              <span>③授权对象：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="grantedObject" value="{{.Paper.GrantedObject}}"   >
-              </span>
-          </p>
-          <p>
-              <span>③授权开始日期：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="grantedStartDate" value="{{.Paper.GrantedStartDate}}"   >
-              </span>
-          </p>
-          <p>
-              <span>③授权结束日期：</span>
-              <span>
-                <input type="text" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" style="color:grey" {{end}} name="grantedEndDate" value="{{.Paper.GrantedEndDate}}"   >
-              </span>
-          </p>
-          <p>
-              <span>授权信息更新日期：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"  name="grantedInfoUpdateTime" value="{{.Paper.GrantedInfoUpdateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>④银行：</span>
-              <span>
-                <input type="text" {{if ne .Action "Receive"}} readonly="readonly" style="color:grey" {{end}} name="bank" value="{{.Paper.Bank}}"   >
-              </span>
-          </p>
-          <p>
-              <span>银行确认收到合约时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"   name="receiveDateTime" value="{{.Paper.ReceiveDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑤评估方：</span>
-              <span>
-                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evaluator" value="{{.Paper.Evaluator}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑤评估种类：</span>
-              <span>
-                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evalType" value="{{.Paper.EvalType}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑤评估质量：</span>
-              <span>
-                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evalQualityProportion" value="{{.Paper.EvalQualityProportion}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑤评估价值：</span>
-              <span>
-                <input type="text" {{if ne .Action "Evaluate"}} readonly="readonly" style="color:grey" {{end}} name="evalAmount" value="{{.Paper.EvalAmount}}"   >
-              </span>
-          </p>
-          <p>
-              <span>评估时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey" name="evalDateTime" value="{{.Paper.EvalDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑥监管方：</span>
-              <span>
-                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="supervisor" value="{{.Paper.Supervisor}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑥仓库货品总量：</span>
-              <span>
-                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="storageAmount" value="{{.Paper.StorageAmount}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑥储存货品种类：</span>
-              <span>
-                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="storageType" value="{{.Paper.StorageType}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑥储存货品地址：</span>
-              <span>
-                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="storageAddress" value="{{.Paper.StorageAddress}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑥储存结束日期：</span>
-              <span>
-                <input type="text" {{if ne .Action "PutInStorage"}} readonly="readonly" style="color:grey" {{end}} name="endDate" value="{{.Paper.EndDate}}"   >
-              </span>
-          </p>
-          <p>
-              <span>出具仓单的时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"  name="storageInfoUpdate" value="{{.Paper.StorageInfoUpdate}}"   >
-              </span>
-          </p>
-          <p>
-              <span>⑦回购方：</span>
-              <span>
-                <input type="text" {{if ne .Action "ReadyRepo"}} readonly="readonly" style="color:grey" {{end}} name="repurchaser" value="{{.Paper.Repurchaser}}"   >
-              </span>
-          </p>
-          <p>
-              <span>回购就绪时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"   name="readyDateTime" value="{{.Paper.ReadyDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>确定放款时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"   name="acceptDateTime" value="{{.Paper.AcceptDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>本金返还时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"  name="paidBackDateTime" value="{{.Paper.PaidbackDateTime}}"   >
-              </span>
-          </p>
-          <p>
-              <span>执行回购时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"  name="repurchaseDateTime" value="{{.Paper.RepurchaseDateTime}}"   >
-              </span>
-          </p>
-          <p>
-             <span>修订时间：</span>
-              <span>
-                <input type="text"  readonly="readonly" style="color:grey"   name="reviseDateTime" value="{{.Paper.ReviseDateTime}}"   >
-              </span>
-          </p>
-        <input type="submit" value="提交"/>
-        </form>
-        <div class="calink">
-            <a href="/index.html">返回首页</a><br/>
+    <!-- Bootstrap core CSS -->
+<link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .btn-lg{
+        display: block;
+        margin: auto;
+        margin-top: 5px;
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/dist/css/form-validation.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/home/welcome">CBIT</a>
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/home/welcome">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/CreateChannelShow">Create Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/QueryChannel">Query Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " href="/queryPage">Query Paper</a>
+            </li>
+            {{if eq .Role "Jeweler"}}
+            <li class="nav-item">
+              <a class="nav-link active" href="/modifyPage?Action=Apply">Create Paper</a>
+            </li>
+            {{end}}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Setting</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex"  action="/home/logout" method="post">
+            <a class="nav-link">{{.Username}}</a>
+            <button class="btn btn-outline-success">Logout</button>
+          </form>
         </div>
+      </div>
+    </nav>   
+    
+<div class="container">
+  <main>
+    <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+      <div class="lh-1">
+        <h1 class="h6 mb-0 text-white lh-1">Modify Paper</h1>
+      </div>
     </div>
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
+      <p class="pb-3 mb-0 small lh-sm">
+        <strong class="pb-2 d-block text-gray-dark">Note</strong>
+        Different actions need different input. Only necessary inputs are required. You need to fill all the editable place of this form to take the action.
+      </p>
+    </div>
+    <form action="/modify" method="post">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="action" class="form-label">Current Action</label>
+          <input type="text" class="form-control" id="action" name="Action" placeholder="" value="{{.Action}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid action is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="jeweler" class="form-label">Jeweler Name</label>
+          <input type="text" class="form-control" id="jeweler" name="jeweler" placeholder="" value="{{.Paper.Jeweler}}" {{if ne .Action "Apply"}} readonly="readonly" {{end}} required >
+          <div class="invalid-feedback">
+            Valid jeweler name is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="paperNumber" class="form-label">Paper Number</label>
+          <input type="text" class="form-control" id="paperNumber" name="paperNumber" placeholder="" value="{{.Paper.PaperNumber}}" {{if ne .Action "Apply"}} readonly="readonly" {{end}} required >
+          <div class="invalid-feedback">
+            Valid paper number is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="jewelerAddr" class="form-label">Jeweler Address</label>
+          <input type="text" class="form-control" id="jewelerAddr" name="jewelerAddr" placeholder="" value="{{.Paper.JewelerAddr}}" {{if ne .Action "Apply"}} readonly="readonly" {{else}} required {{end}} >
+          <div class="invalid-feedback">
+            Valid jeweler address is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="applyDateTime" class="form-label">Apply Date</label>
+          <input type="text" class="form-control" id="applyDateTime" name="applyDateTime" placeholder="" value="{{.Paper.ApplyDateTime}}" readonly="readonly" >
+          <div class="invalid-feedback">
+            Valid apply date is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="financingAmount" class="form-label">Financing Amount (yuan)</label>
+          <input type="text" class="form-control" id="financingAmount" name="financingAmount" placeholder="" value="{{.Paper.FinancingAmount}}" {{if ne .Action "Apply"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid financing amount is required.
+          </div>
+        </div>
+        
+        <div class="col-sm-4">
+          <label for="pledgeType" class="form-label">Pledge Type</label>
+          <input type="text" class="form-control" id="pledgeType" name="pledgeType" placeholder="" value="{{.Paper.PledgeType}}" {{if ne .Action "Apply"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid pledge type is required.
+          </div>
+        </div>
+                
+        <div class="col-sm-4">
+          <label for="pledgeAmount" class="form-label">Pledge Amount (g)</label>
+          <input type="text" class="form-control" id="pledgeAmount" name="pledgeAmount" placeholder="" value="{{.Paper.PledgeAmount}}" {{if ne .Action "Apply"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid pledge amount is required.
+          </div>
+        </div>
+                
+        <div class="col-sm-4">
+          <label for="pledgeApraisedValue" class="form-label">Pledge Apraised Value (yuan)</label>
+          <input type="text" class="form-control" id="pledgeApraisedValue" name="pledgeApraisedValue" placeholder="" value="{{.Paper.PledgeApraisedValue}}" {{if ne .Action "Apply"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid pledge apraised value is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="productor" class="form-label">Productor</label>
+          <input type="text" class="form-control" id="productor" name="productor" placeholder="" value="{{.Paper.Productor}}" {{if ne .Action "OfferProductInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid productor is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="productType" class="form-label">Product Type</label>
+          <input type="text" class="form-control" id="productType" name="productType" placeholder="" value="{{.Paper.ProductType}}" {{if ne .Action "OfferProductInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid product type is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="productAmount" class="form-label">Product Amount</label>
+          <input type="text" class="form-control" id="productAmount" name="productAmount" placeholder="" value="{{.Paper.ProductAmount}}" {{if ne .Action "OfferProductInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid product amount is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="productDate" class="form-label">Product Date</label>
+          <input type="text" class="form-control" id="productDate" name="productDate" placeholder="" value="{{.Paper.ProductDate}}" {{if ne .Action "OfferProductInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid product date is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="productInfoUpdateTime" class="form-label">Product Info Update Time</label>
+          <input type="text" class="form-control" id="productInfoUpdateTime" name="productInfoUpdateTime" placeholder="" value="{{.Paper.ProductInfoUpdateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid product info update time is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="brandCompany" class="form-label">Brand Company</label>
+          <input type="text" class="form-control" id="brandCompany" name="brandCompany" placeholder="" value="{{.Paper.BrandCompany}}" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid brand company is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="brandCompanyAddr" class="form-label">Brand Company Address</label>
+          <input type="text" class="form-control" id="brandCompanyAddr" name="brandCompanyAddr" placeholder="" value="{{.Paper.BrandCompanyAddr}}" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid brand company address is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="grantedObject" class="form-label">Granted Object</label>
+          <input type="text" class="form-control" id="grantedObject" name="grantedObject" placeholder="" value="{{.Paper.GrantedObject}}" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid granted object is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="grantedStartDate" class="form-label">Granted Start Date</label>
+          <input type="text" class="form-control" id="grantedStartDate" name="grantedStartDate" placeholder="" value="{{.Paper.GrantedStartDate}}" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid granted start date is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="grantedEndDate" class="form-label">Granted End Date</label>
+          <input type="text" class="form-control" id="grantedEndDate" name="grantedEndDate" placeholder="" value="{{.Paper.GrantedEndDate}}" {{if ne .Action "OfferLisenceInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid granted end date is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="grantedInfoUpdateTime" class="form-label">Granted Info Update Time</label>
+          <input type="text" class="form-control" id="grantedInfoUpdateTime" name="grantedInfoUpdateTime" placeholder="" value="{{.Paper.GrantedInfoUpdateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid granted info update time is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="bank" class="form-label">Bank</label>
+          <input type="text" class="form-control" id="bank" name="bank" placeholder="" value="{{.Paper.Bank}}" {{if ne .Action "Receive"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid Bank is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="receiveDateTime" class="form-label">Receive Date Time</label>
+          <input type="text" class="form-control" id="receiveDateTime" name="receiveDateTime" placeholder="" value="{{.Paper.ReceiveDateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid receive date time is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="evaluator" class="form-label">Evaluator</label>
+          <input type="text" class="form-control" id="evaluator" name="evaluator" placeholder="" value="{{.Paper.Evaluator}}" {{if ne .Action "Evaluate"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid evaluator is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="evalDateTime" class="form-label">Evaluate Date Time</label>
+          <input type="text" class="form-control" id="evalDateTime" name="evalDateTime" placeholder="" value="{{.Paper.EvalDateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid evaluate date time is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="evalType" class="form-label">Evaluate Type</label>
+          <input type="text" class="form-control" id="evalType" name="evalType" placeholder="" value="{{.Paper.EvalType}}" {{if ne .Action "Evaluate"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid evaluate type is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="evalQualityProportion" class="form-label">Evaluate Quality Proportion</label>
+          <input type="text" class="form-control" id="evalQualityProportion" name="evalQualityProportion" placeholder="" value="{{.Paper.EvalQualityProportion}}" {{if ne .Action "Evaluate"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid evaluate quality proportion is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="evalAmount" class="form-label">Evaluate Amount (g)</label>
+          <input type="text" class="form-control" id="evalAmount" name="evalAmount" placeholder="" value="{{.Paper.EvalAmount}}" {{if ne .Action "Evaluate"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid evaluate amount is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="evalPrice" class="form-label">Evaluate Price (yuan)</label>
+          <input type="text" class="form-control" id="evalPrice" name="evalPrice" placeholder="" value="{{.Paper.EvalPrice}}" {{if ne .Action "Evaluate"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid evaluate price is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="supervisor" class="form-label">Supervisor</label>
+          <input type="text" class="form-control" id="supervisor" name="supervisor" placeholder="" value="{{.Paper.Supervisor}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid supervisor is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="storageAmount" class="form-label">Storage Amount (g)</label>
+          <input type="text" class="form-control" id="storageAmount" name="storageAmount" placeholder="" value="{{.Paper.StorageAmount}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid storage amount is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="storageType" class="form-label">Storage Type</label>
+          <input type="text" class="form-control" id="storageType" name="storageType" placeholder="" value="{{.Paper.StorageType}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid storage type is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="storageAddress" class="form-label">Storage Address</label>
+          <input type="text" class="form-control" id="storageAddress" name="storageAddress" placeholder="" value="{{.Paper.StorageAddress}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid storage address is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="startDate" class="form-label">Start Date</label>
+          <input type="text" class="form-control" id="startDate" name="startDate" placeholder="" value="{{.Paper.StartDate}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid start date is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="endDate" class="form-label">End Date</label>
+          <input type="text" class="form-control" id="endDate" name="endDate" placeholder="" value="{{.Paper.EndDate}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid end date is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="storageInfoUpdate" class="form-label">Storage Info Update Time</label>
+          <input type="text" class="form-control" id="storageInfoUpdate" name="storageInfoUpdate" placeholder="" value="{{.Paper.StorageInfoUpdate}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid storage info update time is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <div class="row g-3">
+        <div class="col-sm-4">
+          <label for="repurchaser" class="form-label">Repurchaser</label>
+          <input type="text" class="form-control" id="repurchaser" name="repurchaser" placeholder="" value="{{.Paper.Repurchaser}}" {{if ne .Action "ReadyRepo"}} readonly="readonly" {{else}} required {{end}}>
+          <div class="invalid-feedback">
+            Valid repurchaser is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="readyDateTime" class="form-label">Ready Repurchase Date Time</label>
+          <input type="text" class="form-control" id="readyDateTime" name="readyDateTime" placeholder="" value="{{.Paper.ReadyDateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid ready repurchase date time is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="acceptDateTime" class="form-label">Accept Date Time</label>
+          <input type="text" class="form-control" id="acceptDateTime" name="acceptDateTime" placeholder="" value="{{.Paper.AcceptDateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid accept date time is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="paidbackDateTime" class="form-label">Paid back Date Time</label>
+          <input type="text" class="form-control" id="paidbackDateTime" name="paidbackDateTime" placeholder="" value="{{.Paper.PaidbackDateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid paid back Date Time is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="repurchaseDateTime" class="form-label">Repurchase Date Time</label>
+          <input type="text" class="form-control" id="repurchaseDateTime" name="repurchaseDateTime" placeholder="" value="{{.Paper.RepurchaseDateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid repurchase date time is required.
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <label for="reviseDateTime" class="form-label">Revise Date Time</label>
+          <input type="text" class="form-control" id="reviseDateTime" name="reviseDateTime" placeholder="" value="{{.Paper.ReviseDateTime}}" readonly="readonly">
+          <div class="invalid-feedback">
+            Valid revise date time is required.
+          </div>
+        </div>
+      </div>
+      <hr class="my">
+      <button class="w-50 btn btn-primary btn-lg bg-purple" type="submit">Take the action</button>
+    </form>
+  </main>
+
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <p class="col-md-4 mb-0 text-muted">&copy; 2022 CBIT</p>
+
+    <ul class="nav col-md-4 justify-content-end">
+      <li class="nav-item"><a href="/home/welcome" class="nav-link px-2 text-muted">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+    </ul>
+  </footer>
 </div>
 
-<div class="common footer">
-    区块链智能科技中心出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
-</div>
+    <script src="/assets/dist/js/bootstrap.bundle.min.js"></script>
 
-</body>
+      <script src="/assets/dist/js/form-validation.js"></script>
+  </body>
 </html>

@@ -14,20 +14,19 @@ import (
 
 func WebStart(app *controllers.Application) {
 
-	fs := http.FileServer(http.Dir("web/static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	fs := http.FileServer(http.Dir("web/assets"))
+	http.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
-	// http.HandleFunc("/index", app.IndexView)
-	http.HandleFunc("/index.html", app.IndexView)
-	http.HandleFunc("/query", app.QueryInfo)
+	http.HandleFunc("/queryPage", app.QueryShow)
+	http.HandleFunc("/query", app.QueryInfo1)
 	http.HandleFunc("/modifyPage", app.ModifyShow)
 	http.HandleFunc("/modify", app.Modify)
-	//http.HandleFunc("/Apply", app.Apply)
 
 	http.HandleFunc("/", app.Account)
 	http.HandleFunc("/home", app.Account)
 	http.HandleFunc("/home/index", app.Account)
-	http.HandleFunc("/home/login", app.Login)
+	http.HandleFunc("/login", app.Login)
+	http.HandleFunc("/login_cn", app.Login_cn)
 	http.HandleFunc("/home/welcome", app.Welcome)
 	http.HandleFunc("/home/logout", app.Logout)
 	// http.HandleFunc("/home/logout", accountcontroller.Logout)

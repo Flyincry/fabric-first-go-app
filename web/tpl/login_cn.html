@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Signin</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/sign-in/">
+    
+
+    <!-- Bootstrap core CSS -->
+<link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      .btn {
+        background-color: #6f42c1;
+      }
+
+      h1{
+        color: #3f3f3f;
+      }
+
+      canvas{
+      border: 1px solid rgb(136, 131, 131);
+      border-radius: 4px;
+      }
+
+      body{
+        background-image: url("./assets/brand/signin2.jpg");
+        background-position: center 0;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        -webkit-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -ms-background-size: cover;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="./assets/dist/css/signin.css" rel="stylesheet">
+  </head>
+  <body onload="onLoadPage()">
+     <nav class="navbar navbar-expand-lg fixed-top" aria-label="Main navigation">
+       <div class="container-fluid">
+        <a class="text-white" href="/">English</a>
+       </div>
+     </nav>
+    <div class="container-fluid">
+      <div class="row p-5 mb-4 rounded-3">
+        <div class="col-8 text-white">
+          <p class="fst-italic fs-8">开发中</p>
+          <h1 class="display-5 fw-bold text-purple">珠宝供应链融资管理平台</h1>
+          <p class=" fs-4" style="text-shadow: black 2px 2px 2px;">为解决传统珠宝行业融资难的问题，链智中心创造了以联盟链为数据管理基础的珠宝供应链融资平台。平台利用了联盟链不可篡改，易存证，高性能等特性，为供应商、资金方及其他上下游企业提供了集成式的数据服务。</p>
+        </div>
+
+        <div class="form-signin col-4 bg-light bg-opacity-75 rounded-3 shadow-lg">
+          <form class="needs-validation" method="post" action="/login" onsubmit="return clickLogin();" novalidate>
+            <img class="mb-4" src="./assets/brand/zh-hans_logo.png" alt="" width="280" height="40">
+        
+            <div class="form-floating">
+              <input type="username" class="form-control" name="username" id="floatingInput" placeholder="name@example.com" required>
+              <label for="floatingInput">账号</label>
+            </div>
+            <div class="form-floating">
+              <input type="password" class="form-control" name="password" id="floatingPassword" placeholder="Password" required>
+              <label for="floatingPassword">密码</label>
+            </div>
+            <div class="form-floating">
+              <input type="channel" class="form-control" name="channel" id="floatingChannel" placeholder="Channel" required>
+              <label for="floatingChannel">群组</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" name="captcha" class="form-control "  id='floatingInput' placeholder="Input" required>
+              <label for="floatingcaptcha">验证码</label>
+            </div>
+            <div class="row ">
+              <div class="col-5">
+                <canvas #canvas id="myCanvas" onclick="onLoadPage()" width="120" height="46"></canvas>
+              </div>
+              <div class="col-6">
+                <p>点击图片以刷新</p>
+              </div>
+            </div>
+            <button class="w-100 btn btn-lg btn-primary" type="submit">登录</button>
+            <script src="./assets/dist/js/demo.js"></script>
+          </form>
+          <a class="w-100 btn btn-lg btn-primary" href="/RegistPage">注册</a>
+           <p class="col py-2 text-danger">{{.err}}</p>
+        </div>
+      </div>
+    </div>
+   <script src="/assets/dist/js/bootstrap.bundle.min.js"></script>
+   <script src="/assets/dist/js/form-validation.js"></script>
+  </body>
+</html>

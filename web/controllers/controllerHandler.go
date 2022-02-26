@@ -45,7 +45,10 @@ func (app *Application) Regist(w http.ResponseWriter, r *http.Request) {
 	} else {
 		_ = u.AddUser()
 		u1, _ := u.GetUserByName()
-		err := app.Fabric.CreateOrg(u1.OrgID)
+		var err error
+		go func() {
+			err = app.Fabric.CreateOrg(u1.OrgID)
+		}()
 		if err != nil {
 			data := map[string]interface{}{
 				"err": "创建组织失败:" + err.Error(),
@@ -62,6 +65,10 @@ func (app *Application) Regist(w http.ResponseWriter, r *http.Request) {
 
 func (app *Application) Account(w http.ResponseWriter, r *http.Request) {
 	showView(w, r, "login.html", nil)
+}
+
+func (app *Application) Login_cn(w http.ResponseWriter, r *http.Request) {
+	showView(w, r, "login_cn.html", nil)
 }
 
 func (app *Application) Login(response http.ResponseWriter, request *http.Request) {
@@ -114,23 +121,8 @@ func (app *Application) Logout(response http.ResponseWriter, request *http.Reque
 	session, _ := store.Get(request, "mysession")
 	session.Options.MaxAge = -1
 	session.Save(request, response)
-	http.Redirect(response, request, "/home/index", http.StatusSeeOther)
+	http.Redirect(response, request, "/home", http.StatusSeeOther)
 }
-
-func (app *Application) IndexView(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "mysession")
-	username := session.Values["username"]
-	role := session.Values["role"]
-	data := map[string]interface{}{
-		"username": username,
-		"role":     role,
-	}
-	showView(w, r, "index.html", data)
-}
-
-// func (app *Application) SetInfoView(w http.ResponseWriter, r *http.Request) {
-// 	showView(w, r, "setInfo.html", nil)
-// }
 
 // 根据指定的 key 设置/修改 value 信息
 func (app *Application) ModifyShow(w http.ResponseWriter, r *http.Request) {
@@ -138,14 +130,17 @@ func (app *Application) ModifyShow(w http.ResponseWriter, r *http.Request) {
 	jeweler := r.FormValue("jeweler")
 	paperNumber := r.FormValue("paperNumber")
 	action := r.FormValue("Action")
-	result, err := app.Fabric.Querypaper(jeweler, paperNumber)
+	paper := service.InventoryFinancingPaper{
+		Jeweler:     jeweler,
+		PaperNumber: paperNumber,
+	}
+	msg, err := app.Fabric.Action(paper, "QueryPaper")
+	//fmt.Println(msg)
+	json.Unmarshal(msg, &paper)
 
 	session, _ := store.Get(r, "mysession")
 	username := session.Values["username"].(string)
 	role := session.Values["role"].(string)
-
-	var paper = service.InventoryFinancingPaper{}
-	json.Unmarshal(result, &paper)
 
 	data := &struct {
 		Paper    service.InventoryFinancingPaper
@@ -177,11 +172,13 @@ func (app *Application) Modify(w http.ResponseWriter, r *http.Request) {
 	var decoder = schema.NewDecoder()
 	decoder.SetAliasTag("json")
 	err := r.ParseForm()
-	err = decoder.Decode(&paper, r.PostForm)
+	err = decoder.Decode(&paper, r.Form)
 	fmt.Println(paper)
+	fmt.Println("paper state: ", paper.State, "\n")
 
 	// 执行链码
 	action := r.FormValue("Action")
+	fmt.Println(action)
 
 	// 创建服务句柄, 调用业务层, 反序列化
 	session, _ := store.Get(r, "mysession")
@@ -189,25 +186,42 @@ func (app *Application) Modify(w http.ResponseWriter, r *http.Request) {
 		OrgName: "Org" + session.Values["orgid"].(string),
 		OrgUser: "User1",
 	}
-	channel, _ := session.Values["channel"].(string)
-	serviceHandler, err := service.InitService("simplecc", channel, &org, app.SDK)
-	res, err := serviceHandler.Action(paper, action)
-	//res, err := app.Fabric.Action(paper, action)
-	fmt.Println(paper)
-	fmt.Println(res)
+	//channel, _ := session.Values["channel"].(string)
+	//fmt.Println("Modify channel:" + channel + "\n")
+	fmt.Println("Modify org:" + org.OrgName + org.OrgUser + "\n")
+	//serviceHandler, err := service.InitService("simplecc", channel, &org, app.SDK)
+	//res, err := serviceHandler.Action(paper, action)
+	_, err = app.Fabric.Action(paper, action)
+	//fmt.Println(res)
 	fmt.Println(err)
 
 	// 响应客户端
 	r.Form.Set("jeweler", paper.Jeweler)
 	r.Form.Set("paperNumber", paper.PaperNumber)
-	app.QueryInfo(w, r)
+	app.QueryInfo1(w, r)
 }
 
-// 根据指定的 Key 查询信息
-func (app *Application) QueryInfo(w http.ResponseWriter, r *http.Request) {
+func (app *Application) QueryShow(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"]
+	role := session.Values["role"]
+	data := map[string]interface{}{
+		"username": username,
+		"role":     role,
+	}
+	showView(w, r, "queryPage.html", data)
+}
+
+// 根据指定的 Key 查询信息test
+func (app *Application) QueryInfo1(w http.ResponseWriter, r *http.Request) {
 	// 获取提交数据
 	jeweler := r.FormValue("jeweler")
 	paperNumber := r.FormValue("paperNumber")
+	paper := service.InventoryFinancingPaper{
+		Jeweler:     jeweler,
+		PaperNumber: paperNumber,
+	}
+	action := "QueryPaper"
 
 	// 获取用户信息
 	session, _ := store.Get(r, "mysession")
@@ -217,9 +231,18 @@ func (app *Application) QueryInfo(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("role: ", role)
 
 	// 调用业务层, 反序列化
-	msg, err := app.Fabric.Querypaper(jeweler, paperNumber)
-	var paper = service.InventoryFinancingPaper{}
+	//org := sdkenv.OrgInfo{
+	//OrgName: "Org" + session.Values["orgid"].(string),
+	//OrgUser: "User1",
+	//}
+	//channel, _ := session.Values["channel"].(string)
+	//serviceHandler, err := service.InitService("simplecc", channel, &org, app.SDK)
+	//msg, err := serviceHandler.Action(paper, action)
+	msg, err := app.Fabric.Action(paper, action)
+	//fmt.Println(msg)
 	json.Unmarshal(msg, &paper)
+	fmt.Println(paper)
+	fmt.Println("paper state: ", paper.State, "\n")
 
 	// 封装响应数据
 	data := &struct {
@@ -228,19 +251,21 @@ func (app *Application) QueryInfo(w http.ResponseWriter, r *http.Request) {
 		Flag     bool
 		Username string
 		Role     string
+		Action   string
 	}{
 		Paper:    paper,
 		Msg:      "",
 		Flag:     false,
 		Username: username,
 		Role:     role,
+		Action:   action,
 	}
 	if err != nil {
 		data.Msg = err.Error()
 		data.Flag = true
 	}
 	// 响应客户端
-	showView(w, r, "queryReq.html", data)
+	showView(w, r, "queryResult.html", data)
 }
 
 // Channel
@@ -265,12 +290,13 @@ func (app *Application) CreateChannel(w http.ResponseWriter, r *http.Request) {
 	ChannelName := r.FormValue("ChannelName")
 
 	// 调用业务层, 反序列化
-	app.Fabric.CreateChan(ChannelName)
+	go app.Fabric.CreateChan(ChannelName)
 
 	// 响应客户端
-	r.Form.Set("OrgName", "1")
-	r.Form.Set("Port", "7051")
-	app.QueryChannel(w, r)
+	// r.Form.Set("OrgName", "1")
+	// r.Form.Set("Port", "7051")
+	// app.QueryChannel(w, r)
+	app.CreateChannelShow(w, r)
 }
 
 // 根据指定的 Key 查询某个组织所在的通道
@@ -284,24 +310,26 @@ func (app *Application) QueryChannel(w http.ResponseWriter, r *http.Request) {
 	username := session.Values["username"].(string)
 	role := session.Values["role"].(string)
 
-	msg, err := "", ""
+	msg := ""
 	// 调用业务层, 反序列化
 	if OrgName != "" {
-		msg = app.Fabric.QueryChan(OrgName, Port)
+		msg, _ = app.Fabric.QueryChan(OrgName, Port)
 	}
 
 	// 封装响应数据
 	data := &struct {
 		Msg      string
-		Err      string
 		Username string
 		Role     string
 	}{
 		Msg:      msg,
-		Err:      err,
 		Username: username,
 		Role:     role,
 	}
+
+	// if err != nil {
+	// 	data.Msg = err.Error()
+	// }
 
 	// 响应客户端
 	showView(w, r, "QueryChannel.html", data)
@@ -333,4 +361,49 @@ func (app *Application) QueryChannel(w http.ResponseWriter, r *http.Request) {
 
 // 	// 响应客户端
 // 	showView(w, r, "other.html", data)
+// }
+
+// // 根据指定的 Key 查询信息
+// func (app *Application) QueryInfo(w http.ResponseWriter, r *http.Request) {
+// 	// 获取提交数据
+// 	jeweler := r.FormValue("jeweler")
+// 	paperNumber := r.FormValue("paperNumber")
+// 	action := "QueryPaper"
+
+// 	// 获取用户信息
+// 	session, _ := store.Get(r, "mysession")
+// 	username := session.Values["username"].(string)
+// 	role := session.Values["role"].(string)
+// 	// fmt.Println("username: ", username)
+// 	// fmt.Println("role: ", role)
+
+// 	// 调用业务层, 反序列化
+// 	msg, err := app.Fabric.Querypaper(jeweler, paperNumber)
+// 	var paper = service.InventoryFinancingPaper{}
+// 	json.Unmarshal(msg, &paper)
+// 	fmt.Println(paper)
+// 	fmt.Println("paper state: ", paper.State, "\n")
+
+// 	// 封装响应数据
+// 	data := &struct {
+// 		Paper    service.InventoryFinancingPaper
+// 		Msg      string
+// 		Flag     bool
+// 		Username string
+// 		Role     string
+// 		Action   string
+// 	}{
+// 		Paper:    paper,
+// 		Msg:      "",
+// 		Flag:     false,
+// 		Username: username,
+// 		Role:     role,
+// 		Action:   action,
+// 	}
+// 	if err != nil {
+// 		data.Msg = err.Error()
+// 		data.Flag = true
+// 	}
+// 	// 响应客户端
+// 	showView(w, r, "queryResult.html", data)
 // }

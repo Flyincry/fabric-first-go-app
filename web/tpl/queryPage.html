@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Query Paper</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/checkout/">
+
+    
+
+    <!-- Bootstrap core CSS -->
+<link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/dist/css/form-validation.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/home/welcome">CBIT</a>
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/home/welcome">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/CreateChannelShow">Create Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/QueryChannel">Query Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/queryPage">Query Paper</a>
+            </li>
+            {{if eq .role "Jeweler"}}
+            <li class="nav-item">
+              <a class="nav-link" href="/modifyPage?Action=Apply">Create Paper</a>
+            </li>
+            {{end}}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Setting</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex"  action="/home/logout" method="post">
+            <a class="nav-link">{{.username}}</a>
+            <button class="btn btn-outline-success">Logout</button>
+          </form>
+        </div>
+      </div>
+    </nav>   
+    
+<div class="container">
+  <main>
+    <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+      <div class="lh-1">
+        <h1 class="h6 mb-0 text-white lh-1">Query Paper</h1>
+      </div>
+    </div>
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
+      <p class="pb-3 mb-0 small lh-sm">
+        <strong class="pb-2 d-block text-gray-dark">Note</strong>
+        The jeweler name of initiator and the paper number is needed to locate a paper. Because paper number is not unique for a pool of jewelers.
+      </p>
+    </div>
+    <div class="row g-5">
+      <div class="col-md-5 col-lg-4 order-md-last">
+        <h4 class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-primary">Your Paper</span>
+          <span class="badge bg-primary rounded-pill">3</span>
+        </h4>
+        <ul class="list-group mb-3">
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Paper 001</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Paper 002</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+          </li>
+          <li class="list-group-item d-flex justify-content-between lh-sm">
+            <div>
+              <h6 class="my-0">Paper 003</h6>
+              <small class="text-muted">Brief description</small>
+            </div>
+          </li>
+        </ul>
+
+      </div>
+      <div class="col-md-7 col-lg-8">
+        <h4 class="mb-3">Search by Key</h4>
+        <form class="needs-validation" action="/query" method="post" novalidate>
+          <div class="row g-3">
+            <div class="col-sm-12">
+              <label for="firstName" class="form-label">Jeweler Name</label>
+              <input type="text" class="form-control" id="firstName" name="jeweler" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid jeweler name is required.
+              </div>
+            </div>
+
+            <div class="col-sm-12">
+              <label for="lastName" class="form-label">Paper Number</label>
+              <input type="text" class="form-control" id="lastName" name="paperNumber" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid paper number is required.
+              </div>
+            </div>
+          </div>
+          <hr class="my-4">
+          <button class="w-100 btn btn-primary btn-lg bg-purple" type="submit">Query</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <p class="col-md-4 mb-0 text-muted">&copy; 2022 CBIT</p>
+
+    <ul class="nav col-md-4 justify-content-end">
+      <li class="nav-item"><a href="/home/welcome" class="nav-link px-2 text-muted">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+    </ul>
+  </footer>
+</div>
+
+    <script src="/assets/dist/js/bootstrap.bundle.min.js"></script>
+
+      <script src="/assets/dist/js/form-validation.js"></script>
+  </body>
+</html>

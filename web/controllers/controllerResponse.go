@@ -1,16 +1,16 @@
 /**
   author: kevin
- */
+*/
 package controllers
 
 import (
+	"fmt"
+	"html/template"
 	"net/http"
 	"path/filepath"
-	"html/template"
-	"fmt"
 )
 
-func showView(w http.ResponseWriter, r *http.Request, templateName string, data interface{})  {
+func showView(w http.ResponseWriter, r *http.Request, templateName string, data interface{}) {
 	page := filepath.Join("web", "tpl", templateName)
 
 	// 创建模板实例

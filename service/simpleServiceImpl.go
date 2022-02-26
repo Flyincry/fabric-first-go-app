@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
@@ -33,12 +34,12 @@ func (t *ServiceHandler) SetInfo(name, num string) (string, error) {
 func (t *ServiceHandler) Querypaper(jeweler, paperNumber string) ([]byte, error) {
 
 	req := channel.Request{ChaincodeID: t.ChaincodeID, Fcn: "QueryPaper", Args: [][]byte{[]byte(jeweler), []byte(paperNumber)}}
-	respone, err := t.Client.Query(req)
+	response, err := t.Client.Query(req)
 	if err != nil {
 		return []byte{0x00}, err
 	}
 
-	return respone.Payload, nil
+	return response.Payload, nil
 }
 
 func (t *ServiceHandler) Apply(paperNumber, jeweler, applyDateTime, financialAmount string) (string, error) {
@@ -52,7 +53,7 @@ func (t *ServiceHandler) Apply(paperNumber, jeweler, applyDateTime, financialAmo
 	return string(respone.TransactionID), nil
 }
 
-func (t *ServiceHandler) Action(paper InventoryFinancingPaper, Action string) (string, error) {
+func (t *ServiceHandler) Action(paper InventoryFinancingPaper, Action string) ([]byte, error) {
 	now := time.Now().Format("2006-01-02 15:04:05")
 	var comm []string
 	switch Action {
@@ -60,22 +61,24 @@ func (t *ServiceHandler) Action(paper InventoryFinancingPaper, Action string) (s
 		comm = []string{Action, paper.PaperNumber, paper.Jeweler, now} //4
 	case "Supervise", "Default", "QueryPaper", "Reject":
 		comm = []string{Action, paper.PaperNumber, paper.Jeweler} //3
-	case "Apply", "Revise":
+	case "Apply":
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.JewelerAddr, now, paper.FinancingAmount, paper.PledgeType, paper.PledgeAmount, paper.PledgeApraisedValue} //9
+	case "Revise":
 		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.FinancingAmount, now} //5
 	case "Evaluate":
-		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Evaluator, paper.EvalType, paper.EvalQualityProportion, paper.EvalAmount, now} //8
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Evaluator, paper.EvalType, paper.EvalQualityProportion, paper.EvalAmount, paper.EvalPrice, now} //9
 	case "Receive":
 		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Bank, now} //5
 	case "ReadyRepo":
 		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Repurchaser, now} //5
 	case "PutInStorage":
-		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Supervisor, paper.StorageAmount, paper.StorageType, paper.StorageAddress, paper.EndDate, now} //9
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Supervisor, paper.StorageAmount, paper.StorageType, paper.StorageAddress, paper.StartDate, paper.EndDate, now} //10
 	case "OfferProductInfo":
 		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.Productor, paper.ProductType, paper.ProductAmount, paper.ProductDate, now} //8
 	case "OfferLisenceInfo":
-		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.BrandCompany, paper.GrantedObject, paper.GrantedStartDate, paper.GrantedEndDate, now} //9
+		comm = []string{Action, paper.PaperNumber, paper.Jeweler, paper.BrandCompany, paper.BrandCompanyAddr, paper.GrantedObject, paper.GrantedStartDate, paper.GrantedEndDate, now} //9
 	}
-
+	//fmt.Println("Action comm:" + comm[0] + comm[1] + comm[2] + comm[3] + comm[4] + comm[5] + comm[6] + comm[7] + comm[8] + "\n")
 	var response channel.Response
 	var err error
 	switch len(comm) {
@@ -89,13 +92,15 @@ func (t *ServiceHandler) Action(paper InventoryFinancingPaper, Action string) (s
 		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3]), []byte(comm[4]), []byte(comm[5]), []byte(comm[6]), []byte(comm[7])}})
 	case 9:
 		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3]), []byte(comm[4]), []byte(comm[5]), []byte(comm[6]), []byte(comm[7]), []byte(comm[8])}})
+	case 10:
+		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3]), []byte(comm[4]), []byte(comm[5]), []byte(comm[6]), []byte(comm[7]), []byte(comm[8]), []byte(comm[9])}})
 	}
 
 	if err != nil {
-		return "", err
+		return []byte{0x00}, err
 	}
 
-	return string(response.TransactionID), nil
+	return response.Payload, nil
 }
 
 func (t *ServiceHandler) CreateChan(ChannelName string) {
@@ -119,7 +124,12 @@ func (t *ServiceHandler) CreateOrg(OrgID string) error {
 	return err
 }
 
-func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string) {
+func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string, err error) {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("捕获异常:", err)
+		}
+	}()
 	os.Setenv("FABRIC_CFG_PATH", "/root/workspace/src/fabric-samples/config")
 	os.Setenv("CORE_PEER_TLS_ENABLED", "true")
 	os.Setenv("CORE_PEER_LOCALMSPID", "Org"+OrgName+"MSP")
@@ -133,10 +143,13 @@ func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string) {
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("combined out:\n%s\n", string(out))
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		return "Wrong orgname or port", err
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
-	return string(out)
+	location := strings.IndexAny(string(out), "joined:") + 130
+	rawStrSlice := []byte(string(out))
+	res := string(rawStrSlice[location:])
+	return res, err
 }
 
 // func (t *ServiceHandler) Action2(action, Jeweler, PaperNumber, FinancingAmount, ApplyDateTime, ReviseDateTime, AcceptDateTime, ReadyDateTime, EvalDateTime, ReceiveDateTime, EndDate, PaidbackDateTime, RepurchaseDateTime, Bank, Evaluator, Repurchaser, Supervisor string) (string, error) {

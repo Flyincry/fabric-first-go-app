@@ -1,50 +1,145 @@
-{{/*
-    author: CBIT
-*/}}
-<html>
-<head>
-    <title>查询通道</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-<div>
-        <h3>Welcome {{.Username}}, indentity: {{.Role}} </h3>
-        <a href="/home/logout">Logout</a>
-</div>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Query Channel</title>
 
-<div class="common menu">
-    <ul>
-        <li><a href="/home/welcome"><img src="/static/img/SFI_logo.png" width="120px" height="50px"/></a></li>
-        <li><a href="/query">查询信息</a></li>
-        <li><a href="/CreateChannelShow">创建通道</a></li>
-        <li><a href="/QueryChannel">查询通道</a></li>
-{{if eq .Role "Jeweler"}}
-        <li><a href="/modifyPage?Action=Apply">新建合约</a></li>
-{{end}}
-    </ul>
-</div>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/checkout/">
 
-<div class="common main">
-    <div class="formInfo" style="width: 50%">
-        <form action="/QueryChannel" method="post">
-            OrgName: <input type="text" name="OrgName" value="" /><br/><br/>
-            Port: <input type="text" name="Port" value="" /><br/><br/>
-            <input type="submit" value="提交"/>
-        </form>
+    
+
+    <!-- Bootstrap core CSS -->
+<link href="/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .btn-lg{
+        display: block;
+        margin: auto;
+        margin-top: 5px;
+      }
+    </style>
+
+    
+    <!-- Custom styles for this template -->
+    <link href="/assets/dist/css/form-validation.css" rel="stylesheet">
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/home/welcome">CBIT</a>
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/home/welcome">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/CreateChannelShow">Create Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="/QueryChannel">Query Channel</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/queryPage">Query Paper</a>
+            </li>
+            {{if eq .Role "Jeweler"}}
+            <li class="nav-item">
+              <a class="nav-link" href="/modifyPage?Action=Apply">Create Paper</a>
+            </li>
+            {{end}}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown" aria-expanded="false">Setting</a>
+              <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex"  action="/home/logout" method="post">
+            <a class="nav-link">{{.Username}}</a>
+            <button class="btn btn-outline-success">Logout</button>
+          </form>
+        </div>
+      </div>
+    </nav>   
+    
+<div class="container">
+  <main>
+    <div class="d-flex align-items-center p-3 my-3 text-white bg-purple rounded shadow-sm">
+      <div class="lh-1">
+        <h1 class="h6 mb-0 text-white lh-1">Query Channel</h1>
+      </div>
     </div>
-    <div class="content">
-        <h2>查询结果</h2>
-        <div class="top">
-                  <p>
-                      <span>{{.Msg}}</span>
-                      <span>{{.Err}}</span>
-                  </p>
+    <div class="my-3 p-3 bg-body rounded shadow-sm">
+      <p class="pb-3 mb-0 small lh-sm">
+        <strong class="pb-2 d-block text-gray-dark">Note</strong>
+        To query what channels a certain organzation joins in, the organzation name and port of peer are needed.
+      </p>
+    </div>
+    <form action="/QueryChannel" method="post">
+      <div class="row g-3">
+        <div class="col-sm">
+          <label for="action" class="form-label">OrgName</label>
+          <input type="text" class="form-control" name="OrgName" placeholder="" value="">
+          <div class="invalid-feedback">
+            Valid action is required.
+          </div>
+        </div>
+        <div class="col-sm">
+            <label for="action" class="form-label">Port</label>
+            <input type="text" class="form-control" name="Port" placeholder="" value="">
+            <div class="invalid-feedback">
+              Valid action is required.
+            </div>
+          </div>
+      </div>
+      <hr class="my">
+      <button class="w-50 btn btn-primary btn-lg bg-purple" type="submit">Query</button>
+    </form>
+    <div class="d-flex align-items-center p-3 my-3 text-black bg-white rounded shadow-sm">
+        <div class="lh-1">
+            <strong class="pb-2 d-block text-gray-dark">Query Result:</strong>
+            <p>
+                <span>{{.Msg}}</span>
+            </p>
         </div>
     </div>
+  </main>
+
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+    <p class="col-md-4 mb-0 text-muted">&copy; 2022 CBIT</p>
+
+    <ul class="nav col-md-4 justify-content-end">
+      <li class="nav-item"><a href="/home/welcome" class="nav-link px-2 text-muted">Home</a></li>
+      <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+    </ul>
+  </footer>
 </div>
 
-<div class="common footer">
-    区块链智能科技中心出品：一个基于 Hyperledger Fabric-SDK-GO 的Web应用示例.
-</div>
-</body>
+    <script src="/assets/dist/js/bootstrap.bundle.min.js"></script>
+
+      <script src="/assets/dist/js/form-validation.js"></script>
+  </body>
 </html>
