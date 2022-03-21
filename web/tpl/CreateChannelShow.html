@@ -61,6 +61,9 @@
               <a class="nav-link" href="/QueryChannel">Query Channel</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="/JoinChannelShow">Join Channel</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="/queryPage">Query Paper</a>
             </li>
             {{if eq .Role "Jeweler"}}
@@ -95,16 +98,19 @@
     <div class="my-3 p-3 bg-body rounded shadow-sm">
       <p class="pb-3 mb-0 small lh-sm">
         <strong class="pb-2 d-block text-gray-dark">Note</strong>
-        To create a channel, you only need to come up with a name of it. The first character of name must be a lowercase letter. 
+        To create a channel, you only need to come up with a name of it. 
+      </p>
+      <p class="pb-3 mb-0 small lh-sm">
+        The channel name should only contain lowercase letters and its length should not exceed 15 characters.
       </p>
     </div>
     <form action="/CreateChannel" method="post">
       <div class="row g-3">
         <div class="col-sm">
           <label for="action" class="form-label">Channel Name</label>
-          <input type="text" class="form-control" id="action" name="ChannelName" placeholder="" value="">
+          <input type="text" pattern="[a-z]{1,15}" class="form-control" id="action" name="ChannelName" placeholder="" value="">
           <div class="invalid-feedback">
-            Valid action is required.
+            Valid name is required.
           </div>
         </div>
       </div>

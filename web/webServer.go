@@ -35,6 +35,9 @@ func WebStart(app *controllers.Application) {
 	http.HandleFunc("/CreateChannelShow", app.CreateChannelShow)
 	http.HandleFunc("/CreateChannel", app.CreateChannel)
 
+	http.HandleFunc("/JoinChannelShow", app.JoinChannelShow)
+	http.HandleFunc("/JoinChannel", app.JoinChannel)
+
 	http.HandleFunc("/RegistPage", app.RegistPage)
 	http.HandleFunc("/Regist", app.Regist)
 

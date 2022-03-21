@@ -5,10 +5,12 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
+	"github.com/shuizhongmose/go-fabric/fabric-first-go-app/db/model"
 )
 
 func (t *ServiceHandler) SetInfo(name, num string) (string, error) {
@@ -108,7 +110,7 @@ func (t *ServiceHandler) CreateChan(ChannelName string) {
 	cmd.Dir = "/root/workspace/src/fabric-samples/test-network"
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		log.Print("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 }
@@ -118,18 +120,30 @@ func (t *ServiceHandler) CreateOrg(OrgID string) error {
 	cmd.Dir = "/root/workspace/src/fabric-samples/test-network/addOrg3"
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		log.Print("cmd.Run() failed with %s\n", err)
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 	return err
 }
 
-func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string, err error) {
+func (t *ServiceHandler) QueryChan(Name string) (Msg string, err error) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("捕获异常:", err)
 		}
 	}()
+	// Get user orgid and port from database
+	u := model.User{
+		Name: Name,
+	}
+	u1, err := u.GetUserByName()
+	if err != nil {
+		return "Unexist OrgName.", err
+	}
+	OrgName := u1.OrgID
+	orgid, _ := strconv.Atoi(u1.OrgID)
+	Port := strconv.Itoa(orgid*2000 + 5051)
+	// Setting environment variables
 	os.Setenv("FABRIC_CFG_PATH", "/root/workspace/src/fabric-samples/config")
 	os.Setenv("CORE_PEER_TLS_ENABLED", "true")
 	os.Setenv("CORE_PEER_LOCALMSPID", "Org"+OrgName+"MSP")
@@ -143,7 +157,7 @@ func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string, err error)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("combined out:\n%s\n", string(out))
-		return "Wrong orgname or port", err
+		return "Blockchain Network Connection Error.", err
 	}
 	fmt.Printf("combined out:\n%s\n", string(out))
 	location := strings.IndexAny(string(out), "joined:") + 130
@@ -152,45 +166,42 @@ func (t *ServiceHandler) QueryChan(OrgName, Port string) (Msg string, err error)
 	return res, err
 }
 
-// func (t *ServiceHandler) Action2(action, Jeweler, PaperNumber, FinancingAmount, ApplyDateTime, ReviseDateTime, AcceptDateTime, ReadyDateTime, EvalDateTime, ReceiveDateTime, EndDate, PaidbackDateTime, RepurchaseDateTime, Bank, Evaluator, Repurchaser, Supervisor string) (string, error) {
-// 	var comm []string
-// 	switch action {
-// 	case "Accept":
-// 		comm = []string{action, Jeweler, PaperNumber, AcceptDateTime}
-// 	case "Apply":
-// 		comm = []string{action, PaperNumber, Jeweler, ApplyDateTime, FinancingAmount}
-// 	case "Default", "QueryPaper", "Reject":
-// 		comm = []string{action, Jeweler, PaperNumber}
-// 	case "Evaluate":
-// 		comm = []string{action, Jeweler, PaperNumber, Evaluator, EvalDateTime}
-// 	case "Payback":
-// 		comm = []string{action, Jeweler, PaperNumber, PaidbackDateTime}
-// 	case "ReadyRepo":
-// 		comm = []string{action, Jeweler, PaperNumber, Repurchaser, ReadyDateTime}
-// 	case "Receive":
-// 		comm = []string{action, Jeweler, Bank, PaperNumber, ReceiveDateTime}
-// 	case "Repurchase":
-// 		comm = []string{action, Jeweler, PaperNumber, RepurchaseDateTime}
-// 	case "Revise":
-// 		comm = []string{action, Jeweler, PaperNumber, ReviseDateTime, FinancingAmount}
-// 	case "Supervise":
-// 		comm = []string{action, Jeweler, Supervisor, EndDate, PaperNumber}
-// 	}
+func (t *ServiceHandler) JoinChan(Name, ChannelName string) (Msg string, err error) {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("捕获异常:", err)
+		}
+	}()
+	// Get user orgid and port from database
+	u := model.User{
+		Name: Name,
+	}
+	u1, err := u.GetUserByName()
+	if err != nil {
+		return "Unexist OrgName.", err
+	}
+	OrgName := u1.OrgID
+	orgid, _ := strconv.Atoi(u1.OrgID)
+	Port := strconv.Itoa(orgid*2000 + 5051)
+	// Setting environment variables
+	os.Setenv("FABRIC_CFG_PATH", "/root/workspace/src/fabric-samples/config")
+	os.Setenv("CORE_PEER_TLS_ENABLED", "true")
+	os.Setenv("CORE_PEER_LOCALMSPID", "Org"+OrgName+"MSP")
+	os.Setenv("CORE_PEER_TLS_ROOTCERT_FILE", "/root/workspace/src/fabric-samples/test-network/organizations/peerOrganizations/org"+OrgName+".example.com/peers/peer0.org"+OrgName+".example.com/tls/ca.crt")
+	os.Setenv("CORE_PEER_MSPCONFIGPATH", "/root/workspace/src/fabric-samples/test-network/organizations/peerOrganizations/org"+OrgName+".example.com/users/Admin@org"+OrgName+".example.com/msp")
+	os.Setenv("CORE_PEER_ADDRESS", "localhost:"+Port)
 
-// 	var response channel.Response
-// 	var err error
-// 	switch len(comm) {
-// 	case 3:
-// 		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2])}})
-// 	case 4:
-// 		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3])}})
-// 	case 5:
-// 		response, err = t.Client.Execute(channel.Request{ChaincodeID: t.ChaincodeID, Fcn: comm[0], Args: [][]byte{[]byte(comm[1]), []byte(comm[2]), []byte(comm[3]), []byte(comm[4])}})
-// 	}
+	cmd := exec.Command("peer", "channel", "join", "-b", "./channel-artifacts/"+ChannelName+".block")
+	cmd.Dir = "/root/workspace/src/fabric-samples/test-network"
 
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	return string(response.TransactionID), nil
-// }
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("combined out:\n%s\n", string(out))
+		return "Fail to join channel. Possible reason: unexisted channel.", err
+	}
+	fmt.Printf("combined out:\n%s\n", string(out))
+	location := strings.IndexAny(string(out), "executeJoin") + 162
+	rawStrSlice := []byte(string(out))
+	res := string(rawStrSlice[location:])
+	return res, err
+}

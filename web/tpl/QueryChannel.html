@@ -61,6 +61,9 @@
               <a class="nav-link active" href="/QueryChannel">Query Channel</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="/JoinChannelShow">Join Channel</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="/queryPage">Query Paper</a>
             </li>
             {{if eq .Role "Jeweler"}}
@@ -95,7 +98,7 @@
     <div class="my-3 p-3 bg-body rounded shadow-sm">
       <p class="pb-3 mb-0 small lh-sm">
         <strong class="pb-2 d-block text-gray-dark">Note</strong>
-        To query what channels a certain organzation joins in, the organzation name and port of peer are needed.
+        To query what channels a certain organzation joins in, the organzation name is needed.
       </p>
     </div>
     <form action="/QueryChannel" method="post">
@@ -107,13 +110,6 @@
             Valid action is required.
           </div>
         </div>
-        <div class="col-sm">
-            <label for="action" class="form-label">Port</label>
-            <input type="text" class="form-control" name="Port" placeholder="" value="">
-            <div class="invalid-feedback">
-              Valid action is required.
-            </div>
-          </div>
       </div>
       <hr class="my">
       <button class="w-50 btn btn-primary btn-lg bg-purple" type="submit">Query</button>

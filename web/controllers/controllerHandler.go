@@ -303,7 +303,6 @@ func (app *Application) CreateChannel(w http.ResponseWriter, r *http.Request) {
 func (app *Application) QueryChannel(w http.ResponseWriter, r *http.Request) {
 	// 获取提交数据
 	OrgName := r.FormValue("OrgName")
-	Port := r.FormValue("Port")
 
 	// 获取用户信息
 	session, _ := store.Get(r, "mysession")
@@ -313,7 +312,7 @@ func (app *Application) QueryChannel(w http.ResponseWriter, r *http.Request) {
 	msg := ""
 	// 调用业务层, 反序列化
 	if OrgName != "" {
-		msg, _ = app.Fabric.QueryChan(OrgName, Port)
+		msg, _ = app.Fabric.QueryChan(OrgName)
 	}
 
 	// 封装响应数据
@@ -335,75 +334,55 @@ func (app *Application) QueryChannel(w http.ResponseWriter, r *http.Request) {
 	showView(w, r, "QueryChannel.html", data)
 }
 
-// func (app *Application) Apply(w http.ResponseWriter, r *http.Request) {
-// 	// 获取提交数据
-// 	jeweler := r.FormValue("jeweler")
-// 	paperNumber := r.FormValue("paperNumber")
-// 	financialAmount := r.FormValue("financialAmount")
-// 	applyDateTime := time.Now().String()
+// 展示加入channel的界面
+func (app *Application) JoinChannelShow(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"].(string)
+	role := session.Values["role"].(string)
 
-// 	// 调用业务层, 反序列化
-// 	transactionID, err := app.Fabric.Apply(paperNumber, jeweler, applyDateTime, financialAmount)
+	data := &struct {
+		Username string
+		Role     string
+	}{
+		Username: username,
+		Role:     role,
+	}
 
-// 	// 封装响应数据
-// 	data := &struct {
-// 		Flag bool
-// 		Msg  string
-// 	}{
-// 		Flag: true,
-// 		Msg:  "",
-// 	}
-// 	if err != nil {
-// 		data.Msg = err.Error()
-// 	} else {
-// 		data.Msg = "操作成功，交易ID: " + transactionID
-// 	}
+	showView(w, r, "JoinChannel.html", data)
+}
 
-// 	// 响应客户端
-// 	showView(w, r, "other.html", data)
-// }
+// 让某个组织加入某个通道
+func (app *Application) JoinChannel(w http.ResponseWriter, r *http.Request) {
+	// 获取提交数据
+	OrgName := r.FormValue("OrgName")
+	ChannelName := r.FormValue("ChannelName")
 
-// // 根据指定的 Key 查询信息
-// func (app *Application) QueryInfo(w http.ResponseWriter, r *http.Request) {
-// 	// 获取提交数据
-// 	jeweler := r.FormValue("jeweler")
-// 	paperNumber := r.FormValue("paperNumber")
-// 	action := "QueryPaper"
+	// 获取用户信息
+	session, _ := store.Get(r, "mysession")
+	username := session.Values["username"].(string)
+	role := session.Values["role"].(string)
 
-// 	// 获取用户信息
-// 	session, _ := store.Get(r, "mysession")
-// 	username := session.Values["username"].(string)
-// 	role := session.Values["role"].(string)
-// 	// fmt.Println("username: ", username)
-// 	// fmt.Println("role: ", role)
+	msg := ""
+	// 调用业务层, 反序列化
+	if OrgName != "" {
+		msg, _ = app.Fabric.JoinChan(OrgName, ChannelName)
+	}
 
-// 	// 调用业务层, 反序列化
-// 	msg, err := app.Fabric.Querypaper(jeweler, paperNumber)
-// 	var paper = service.InventoryFinancingPaper{}
-// 	json.Unmarshal(msg, &paper)
-// 	fmt.Println(paper)
-// 	fmt.Println("paper state: ", paper.State, "\n")
+	// 封装响应数据
+	data := &struct {
+		Msg      string
+		Username string
+		Role     string
+	}{
+		Msg:      msg,
+		Username: username,
+		Role:     role,
+	}
 
-// 	// 封装响应数据
-// 	data := &struct {
-// 		Paper    service.InventoryFinancingPaper
-// 		Msg      string
-// 		Flag     bool
-// 		Username string
-// 		Role     string
-// 		Action   string
-// 	}{
-// 		Paper:    paper,
-// 		Msg:      "",
-// 		Flag:     false,
-// 		Username: username,
-// 		Role:     role,
-// 		Action:   action,
-// 	}
-// 	if err != nil {
-// 		data.Msg = err.Error()
-// 		data.Flag = true
-// 	}
-// 	// 响应客户端
-// 	showView(w, r, "queryResult.html", data)
-// }
+	// if err != nil {
+	// 	data.Msg = err.Error()
+	// }
+
+	// 响应客户端
+	showView(w, r, "JoinChannel.html", data)
+}
