@@ -61,9 +61,6 @@
               <a class="nav-link" href="/QueryChannel">Query Channel</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/JoinChannelShow">Join Channel</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link " href="/queryPage">Query Paper</a>
             </li>
             {{if eq .Role "Jeweler"}}
@@ -155,7 +152,7 @@
         
         <div class="col-sm-4">
           <label for="pledgeType" class="form-label">Pledge Type</label>
-          <input type="text" class="form-control" id="pledgeType" name="pledgeType" placeholder="" value="{{.Paper.PledgeType}}" {{if ne .Action "Apply"}} readonly="readonly" {{else}} required {{end}}>
+          <input type="text" class="form-control" id="pledgeType" name="pledgeType" placeholder="K金 or 足金" value="{{.Paper.PledgeType}}" {{if ne .Action "Apply"}} readonly="readonly" {{else}} required {{end}}>
           <div class="invalid-feedback">
             Valid pledge type is required.
           </div>
@@ -189,7 +186,7 @@
 
         <div class="col-sm-4">
           <label for="productType" class="form-label">Product Type</label>
-          <input type="text" class="form-control" id="productType" name="productType" placeholder="" value="{{.Paper.ProductType}}" {{if ne .Action "OfferProductInfo"}} readonly="readonly" {{else}} required {{end}}>
+          <input type="text" class="form-control" id="productType" name="productType" placeholder="K金 or 足金" value="{{.Paper.ProductType}}" {{if ne .Action "OfferProductInfo"}} readonly="readonly" {{else}} required {{end}}>
           <div class="invalid-feedback">
             Valid product type is required.
           </div>
@@ -307,7 +304,7 @@
 
         <div class="col-sm-4">
           <label for="evalType" class="form-label">Evaluate Type</label>
-          <input type="text" class="form-control" id="evalType" name="evalType" placeholder="" value="{{.Paper.EvalType}}" {{if ne .Action "Evaluate"}} readonly="readonly" {{else}} required {{end}}>
+          <input type="text" class="form-control" id="evalType" name="evalType" placeholder="K金 or 足金" value="{{.Paper.EvalType}}" {{if ne .Action "Evaluate"}} readonly="readonly" {{else}} required {{end}}>
           <div class="invalid-feedback">
             Valid evaluate type is required.
           </div>
@@ -357,7 +354,7 @@
 
         <div class="col-sm-4">
           <label for="storageType" class="form-label">Storage Type</label>
-          <input type="text" class="form-control" id="storageType" name="storageType" placeholder="" value="{{.Paper.StorageType}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
+          <input type="text" class="form-control" id="storageType" name="storageType" placeholder="K金 or 足金" value="{{.Paper.StorageType}}" {{if ne .Action "PutInStorage"}} readonly="readonly" {{else}} required {{end}}>
           <div class="invalid-feedback">
             Valid storage type is required.
           </div>
