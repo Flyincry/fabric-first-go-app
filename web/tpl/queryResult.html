@@ -61,9 +61,6 @@
               <a class="nav-link" href="/QueryChannel">Query Channel</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/JoinChannelShow">Join Channel</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link active" href="/queryPage">Query Paper</a>
             </li>
             {{if eq .Role "Jeweler"}}
@@ -436,6 +433,7 @@
         </div>
       </div>
       <hr class="my">
+
       {{if or (eq .Paper.Productor "") (eq .Paper.BrandCompany "")}}
         {{if and (eq .Paper.Productor "") (eq .Role "Productor")}}
           <a class="w-50 btn btn-primary btn-lg bg-purple" href="/modifyPage?Action=OfferProductInfo&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">Offer Product Info</a>
@@ -444,7 +442,26 @@
         {{end}}
       {{else if eq .Paper.Bank ""}}
         {{if eq .Role "Bank"}}
-          <a class="w-50 btn btn-primary btn-lg bg-purple" href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">Receive</a>
+
+          {{if eq .Fraud "fine"}}
+          <div class="alert alert-success" role="alert">
+            No Fraud is detected.
+          </div>
+          {{else if eq .Fraud "Overinvoicing"}}
+            <div class="alert alert-danger" role="alert">
+              OverInvoicing Fraud is detected.
+            </div>
+          {{else if eq .Fraud "Underinvoicing"}}
+            <div class="alert alert-danger" role="alert">
+              UnderInvoicing Fraud is detected.
+            </div>
+          {{else if eq .Fraud "Fakeaddress"}}
+            <div class="alert alert-danger" role="alert">
+              FakeAddress Fraud is detected.
+            </div>
+          {{end}}
+
+        <a class="w-50 btn btn-primary btn-lg bg-purple" href="/modifyPage?Action=Receive&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">Receive</a>
         {{end}}
       {{else if or (eq .Paper.Supervisor "") (or (eq .Paper.Evaluator "") (eq .Paper.Repurchaser ""))}}
         {{if and (eq .Role "Evaluator") (eq .Paper.Evaluator "")}}
@@ -459,6 +476,21 @@
         {{end}}
       {{else if eq .Paper.AcceptDateTime ""}}
         {{if eq .Role "Bank"}}
+
+          {{if eq .Fraud "fine"}}
+          <div class="alert alert-success" role="alert">
+            No Fraud is detected.
+          </div>
+          {{else if eq .Fraud "Phantomshipping"}}
+            <div class="alert alert-danger" role="alert">
+              PhantomShipping Fraud is detected.
+            </div>
+          {{else if eq .Fraud "Checkproductquality"}}
+            <div class="alert alert-danger" role="alert">
+              CheckProductQuality Fraud is detected.
+            </div>
+          {{end}}
+
           <a class="w-50 btn btn-primary btn-lg bg-purple" href="/modifyPage?Action=Accept&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">Accept</a>
           <a class="w-50 btn btn-primary btn-lg bg-purple" href="/modifyPage?Action=Reject&paperNumber={{.Paper.PaperNumber}}&jeweler={{.Paper.Jeweler}}">Reject</a>
         {{end}}
